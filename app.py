@@ -2,6 +2,7 @@
 import json
 import re
 import os
+import html
 import base64
 import requests
 from pathlib import Path
@@ -47,7 +48,7 @@ PRO_CSS = r"""
   --bp-coral: #d96c4e;
   --bp-gold: #c69a4a;
   --bp-sage: #9dac9b;
-  --bp-muted: #6d7277;
+  --bp-muted: #59616A;
   --bp-line: rgba(16,32,51,.14);
   --bp-soft-line: rgba(16,32,51,.08);
   --bp-danger: #9d3c32;
@@ -86,7 +87,8 @@ html, body, [class*="css"], .stApp {
 
 /* Editorial typography */
 h1, h2, h3, h4 { color: var(--bp-ink) !important; }
-h1, h2, h3 { font-family: Georgia, 'Times New Roman', serif !important; letter-spacing: -.035em; }
+h1 { font-family: Georgia, 'Times New Roman', serif !important; letter-spacing: -.035em; }
+h2, h3 { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important; letter-spacing: -.02em; }
 .stMarkdown p, .stMarkdown li, [data-testid="stCaptionContainer"], .stCaption {
   color: var(--bp-muted) !important;
   line-height: 1.58 !important;
@@ -230,20 +232,18 @@ textarea:disabled, input:disabled,
 [data-testid="stFileUploaderDropzone"] span,
 [data-testid="stFileUploaderDropzone"] small,
 [data-testid="stFileUploaderDropzone"] div {
-    color: #334155 !important;
-    -webkit-text-fill-color: #334155 !important;
-    opacity: 1 !important;
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155 !important;
+  opacity: 1 !important;
 }
-
 [data-testid="stFileUploaderDropzone"] [data-testid="stFileUploaderDropzoneInstructions"] span {
-    color: #102033 !important;
-    -webkit-text-fill-color: #102033 !important;
-    font-weight: 700 !important;
+  color: #102033 !important;
+  -webkit-text-fill-color: #102033 !important;
+  font-weight: 700 !important;
 }
-
 [data-testid="stFileUploaderDropzone"] small {
-    color: #5F6872 !important;
-    -webkit-text-fill-color: #5F6872 !important;
+  color: #5F6872 !important;
+  -webkit-text-fill-color: #5F6872 !important;
 }
 [data-testid="stFileUploaderDropzone"] button {
   background: var(--bp-navy) !important;
@@ -407,7 +407,7 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--bp-coral) !imp
   font-size: .86rem;
 }
 .pro-note * { color: var(--bp-ink) !important; }
-.field-meta { color: #777b80 !important; font-size: .74rem; margin-top: -6px; margin-bottom: 5px; }
+.field-meta { color: #59616A !important; font-size: .74rem; margin-top: -6px; margin-bottom: 5px; }
 .conf-high { color: #386c59 !important; font-weight: 800; }
 .conf-med { color: #9b6a27 !important; font-weight: 800; }
 .conf-low { color: var(--bp-danger) !important; font-weight: 800; }
@@ -427,6 +427,23 @@ a { color: var(--bp-blue) !important; }
   [data-testid="stAppViewContainer"] > .main { margin: 0; border-radius: 0; }
   .block-container { padding-left: 1rem; padding-right: 1rem; }
   .pro-header h1 { font-size: 2rem; }
+  [data-baseweb="tab-list"] {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  [data-baseweb="tab"] {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+  [data-testid="stMetric"] { min-height: 108px; }
+}
+
+@media (max-width: 480px) {
+  .block-container { padding-left: .75rem; padding-right: .75rem; }
+  .pro-header { padding-bottom: 16px; margin-bottom: 16px; }
+  .pro-header h1 { font-size: 1.7rem; line-height: 1.03; }
+  .pro-chip { font-size: .62rem; padding: 5px 8px; }
 }
 </style>
 """
@@ -1637,11 +1654,9 @@ st.markdown(
     <div class="pro-header">
       <h1>Consultant Quotation Database</h1>
       <p>CSV-first consultant quotation database with optional PDF extraction, structured comparison and Management decision support.</p>
-      <span class="pro-chip">Executive Blueprint</span>
       <span class="pro-chip">CSV source of truth</span>
-      <span class="pro-chip">Manual review</span>
-      <span class="pro-chip">Optional PDF assistant</span>
       <span class="pro-chip">Executive comparison</span>
+      <span class="pro-chip">Optional PDF / AI tools</span>
     </div>
     """,
     unsafe_allow_html=True,
@@ -1649,114 +1664,178 @@ st.markdown(
 
 with st.sidebar:
     st.header("Project / RFQ")
-    st.text_area("RFQ / project requirement (optional)", key="rfq_text", height=180,
-                 placeholder="Paste the requested scope here for reference...")
+    st.caption("Keep the everyday workflow simple. Advanced AI and project tools are available below when needed.")
+    st.text_area(
+        "RFQ / project requirement (optional)",
+        key="rfq_text",
+        height=150,
+        placeholder="Paste the requested scope here for reference...",
+    )
 
     st.divider()
-    st.markdown('<div class="pro-section">AI extraction</div>', unsafe_allow_html=True)
-    ai_provider = st.selectbox("AI provider", ["OpenRouter", "Gemini Direct", "Heuristic only"], index=0)
-    ai_enabled = ai_provider != "Heuristic only"
+    st.markdown('<div class="pro-section">Current database</div>', unsafe_allow_html=True)
+    record_count = len(st.session_state.records)
+    consultant_count = len({str(r.get("company", "")).strip() for r in st.session_state.records if str(r.get("company", "")).strip()})
+    st.metric("Quotation records", record_count)
+    st.caption(f"{consultant_count} consultant(s) currently loaded.")
 
-    if ai_provider == "OpenRouter":
-        env_key = os.getenv("OPENROUTER_API_KEY", "")
-        api_key_input = st.text_input(
-            "OpenRouter API key", value=env_key, type="password",
-            help="Not saved to project JSON. You may alternatively set OPENROUTER_API_KEY in Windows."
-        )
-        ai_api_key = api_key_input or env_key
-        st.caption("Recommended: set OPENROUTER_API_KEY in PowerShell. The app will load it automatically and will not store it in the project file.")
-        preset = st.selectbox(
-            "OpenRouter model",
-            [
-                "openrouter/free",
-                "deepseek/deepseek-chat:free",
-                "deepseek/deepseek-v3.2",
-                "openai/gpt-5-mini",
-                "google/gemini-2.5-flash",
-                "google/gemini-2.5-flash-lite",
-                "Custom model slug",
-            ],
-            index=0,
-            help="For simple testing, use openrouter/free. To specifically use DeepSeek, choose a DeepSeek option."
-        )
-        if preset == "Custom model slug":
-            ai_model = st.text_input("Model slug", value="deepseek/deepseek-chat:free")
-        else:
-            ai_model = preset
-        st.markdown("**Scanned / image-only PDF recovery**")
-        scan_mode = st.selectbox(
-            "Scanned PDF handling",
-            ["Auto scan when text is poor", "Always scan PDF", "Never scan PDF"],
-            index=0,
-            help="Auto mode first checks the PDF text layer. If it is empty/poor, the app renders each page as an image and uses vision OCR."
-        )
-        scan_engine_label = st.selectbox(
-            "Recovery method",
-            [
-                "Page-image Vision OCR — recommended",
-                "OpenRouter PDF parser — Mistral OCR",
-                "OpenRouter PDF parser — Cloudflare AI",
-            ],
+    # Safe defaults keep the normal office workflow CSV-first and AI-optional.
+    ai_provider = "Heuristic only"
+    ai_enabled = False
+    ai_api_key = ""
+    ai_model = ""
+    scan_mode = "Never scan PDF"
+    scan_engine = ""
+
+    with st.expander("Advanced settings · AI / PDF extraction", expanded=False):
+        st.caption("Optional. The CSV workflow, comparison and exports work without AI.")
+        ai_provider = st.selectbox(
+            "AI provider",
+            ["Heuristic only", "OpenRouter", "Gemini Direct"],
             index=0,
         )
-        if scan_engine_label.startswith("Page-image"):
-            scan_engine = "vision-ocr"
-            st.caption("Recommended for image-only quotations like the Rahim & Co PDF. Pages are rendered locally, then sent as images to the selected OpenRouter model.")
-        elif "Mistral" in scan_engine_label:
-            scan_engine = "mistral-ocr"
-            st.caption("Uses OpenRouter's Mistral OCR PDF parser and may incur OCR charges.")
-        else:
-            scan_engine = "cloudflare-ai"
-            st.caption("Free PDF parser; more suitable for digital PDFs than image-only scans.")
+        ai_enabled = ai_provider != "Heuristic only"
 
-        if not ai_api_key:
-            st.info("Add your OpenRouter key to enable AI extraction, PDF scanning and the AI Analyst tab.")
-    elif ai_provider == "Gemini Direct":
-        env_key = os.getenv("GEMINI_API_KEY", "")
-        api_key_input = st.text_input(
-            "Gemini API key", value=env_key, type="password",
-            help="Not saved to project JSON. You may alternatively set GEMINI_API_KEY in Windows."
+        if ai_provider == "OpenRouter":
+            env_key = os.getenv("OPENROUTER_API_KEY", "")
+            if env_key:
+                st.success("OpenRouter server key detected. The key is kept server-side and is not displayed in this form.")
+                api_key_input = ""
+            else:
+                api_key_input = st.text_input(
+                    "OpenRouter API key",
+                    value="",
+                    type="password",
+                    help="Used only for this session. Prefer a server-side secret for shared deployments.",
+                )
+            ai_api_key = env_key or api_key_input
+            preset = st.selectbox(
+                "OpenRouter model",
+                [
+                    "openrouter/free",
+                    "deepseek/deepseek-chat:free",
+                    "deepseek/deepseek-v3.2",
+                    "openai/gpt-5-mini",
+                    "google/gemini-2.5-flash",
+                    "google/gemini-2.5-flash-lite",
+                    "Custom model slug",
+                ],
+                index=0,
+            )
+            if preset == "Custom model slug":
+                ai_model = st.text_input("Model slug", value="deepseek/deepseek-chat:free")
+            else:
+                ai_model = preset
+
+            st.markdown("**Scanned / image-only PDF recovery**")
+            scan_mode = st.selectbox(
+                "Scanned PDF handling",
+                ["Auto scan when text is poor", "Always scan PDF", "Never scan PDF"],
+                index=0,
+            )
+            scan_engine_label = st.selectbox(
+                "Recovery method",
+                [
+                    "Page-image Vision OCR — recommended",
+                    "OpenRouter PDF parser — Mistral OCR",
+                    "OpenRouter PDF parser — Cloudflare AI",
+                ],
+                index=0,
+            )
+            if scan_engine_label.startswith("Page-image"):
+                scan_engine = "vision-ocr"
+            elif "Mistral" in scan_engine_label:
+                scan_engine = "mistral-ocr"
+            else:
+                scan_engine = "cloudflare-ai"
+
+            st.warning(
+                "When AI extraction is used, quotation / RFQ content may be sent to the selected external AI provider. "
+                "Use it only where external processing is approved for the information involved."
+            )
+            if not ai_api_key:
+                st.info("No OpenRouter key is loaded. The rest of the dashboard continues to work normally.")
+
+        elif ai_provider == "Gemini Direct":
+            env_key = os.getenv("GEMINI_API_KEY", "")
+            if env_key:
+                st.success("Gemini server key detected. The key is kept server-side and is not displayed in this form.")
+                api_key_input = ""
+            else:
+                api_key_input = st.text_input(
+                    "Gemini API key",
+                    value="",
+                    type="password",
+                    help="Used only for this session. Prefer a server-side secret for shared deployments.",
+                )
+            ai_api_key = env_key or api_key_input
+            ai_model = st.selectbox("Gemini model", ["gemini-3.1-flash-lite", "gemini-3.6-flash"], index=0)
+            st.warning(
+                "When AI extraction is used, quotation / RFQ content may be sent to the selected external AI provider. "
+                "Use it only where external processing is approved for the information involved."
+            )
+
+    with st.expander("Project tools", expanded=False):
+        if st.session_state.records:
+            st.download_button(
+                "Download project JSON",
+                json.dumps(st.session_state.records, indent=2),
+                "quotation_project.json",
+                "application/json",
+                use_container_width=True,
+            )
+
+        restore = st.file_uploader("Restore project JSON", type=["json"], key="restore")
+        if restore and st.button("Load project", use_container_width=True):
+            try:
+                restored = json.load(restore)
+                if not isinstance(restored, list) or not all(isinstance(item, dict) for item in restored):
+                    raise ValueError("Project JSON must contain a list of quotation records.")
+                st.session_state.records = restored
+                st.success("Project loaded.")
+                st.rerun()
+            except Exception as e:
+                st.error(f"Could not load project: {e}")
+
+        st.divider()
+        st.caption("Destructive action")
+        confirm_clear = st.checkbox(
+            "I understand this will clear all quotations from the current session",
+            key="confirm_clear_all",
         )
-        ai_api_key = api_key_input or env_key
-        ai_model = st.selectbox("Gemini model", ["gemini-3.1-flash-lite", "gemini-3.6-flash"], index=0)
-        scan_mode = "Never scan PDF"
-        scan_engine = ""
-    else:
-        ai_api_key = ""
-        ai_model = ""
-        scan_mode = "Never scan PDF"
-        scan_engine = ""
+        if st.button(
+            "Clear all quotations",
+            disabled=not confirm_clear or not st.session_state.records,
+            use_container_width=True,
+        ):
+            st.session_state.records = []
+            st.session_state.confirm_clear_all = False
+            st.rerun()
 
-    st.divider()
-    st.markdown('<div class="pro-section">Project data</div>', unsafe_allow_html=True)
-    if st.button("Clear all quotations"):
-        st.session_state.records = []
-        st.rerun()
-    if st.session_state.records:
-        st.download_button("Download project JSON", json.dumps(st.session_state.records, indent=2),
-                           "quotation_project.json", "application/json")
-    restore = st.file_uploader("Restore project JSON", type=["json"], key="restore")
-    if restore and st.button("Load project"):
-        st.session_state.records = json.load(restore)
-        st.rerun()
-
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "1. CSV Database",
-    "2. PDF Assistant",
-    "3. Comparison Dashboard",
-    "4. Scope Matrix",
-    "5. Export & Recommendation",
-    "6. AI Analyst",
+tab1, tab2, tab3, tab4 = st.tabs([
+    "Data",
+    "Compare",
+    "Scope",
+    "Report",
 ])
 
 with tab1:
     st.subheader("CSV quotation database")
     st.markdown(
         '<div class="pro-note"><b>Recommended workflow:</b> treat the CSV as the verified source of truth. '
-        'PDF extraction is optional and can be used only to help prepare a new record before it is reviewed and saved back to CSV.</div>',
+        'Start by loading the verified master CSV. Manual entry and PDF assistance are optional secondary workflows.</div>',
         unsafe_allow_html=True,
     )
 
+    total_records = len(st.session_state.records)
+    total_consultants = len({str(r.get("company", "")).strip() for r in st.session_state.records if str(r.get("company", "")).strip()})
+    total_categories = len({r.get("category") for r in st.session_state.records if r.get("category")})
+    q1, q2, q3 = st.columns(3)
+    q1.metric("Quotation records", total_records)
+    q2.metric("Consultants", total_consultants)
+    q3.metric("Categories", total_categories)
+
+    st.markdown("### Upload verified master CSV")
     left, right = st.columns([1.3, 1])
     with left:
         csv_upload = st.file_uploader(
@@ -1809,48 +1888,71 @@ with tab1:
         st.caption("UTF-8 CSV is used so the file opens cleanly in Excel and can be re-uploaded later.")
 
     st.divider()
-    st.subheader("Manual verified entry")
-    st.caption("Use this when you have already checked the quotation PDF yourself and only want to enter the confirmed commercial data.")
-    mc1, mc2, mc3 = st.columns([1, 1.2, 1])
-    manual_category = mc1.selectbox("Category", ["Land Valuation", "Market Study"], key="manual_category")
-    manual_company = mc2.text_input("Consultant", key="manual_company")
-    manual_fee = mc3.number_input("Professional fee (RM)", min_value=0.0, value=0.0, step=500.0, key="manual_fee")
-    mm1, mm2, mm3 = st.columns(3)
-    manual_sst = mm1.text_input("SST treatment", key="manual_sst", placeholder="e.g. Additional 8%")
-    manual_duration = mm2.text_input("Completion period", key="manual_duration", placeholder="e.g. 14 working days")
-    manual_source = mm3.text_input("Source PDF filename", key="manual_source", placeholder="e.g. Q V Citaglobal.pdf")
-    manual_payment = st.text_area("Payment terms", key="manual_payment", height=80)
-    manual_scope = st.text_area("Scope summary", key="manual_scope", height=100)
-    manual_method = st.text_area("Methodology", key="manual_method", height=75)
-    manual_deliverables = st.text_area("Deliverables", key="manual_deliverables", height=75)
-    manual_notes = st.text_area("Notes / exclusions / validity", key="manual_notes", height=75)
-    if st.button("Add verified record", key="add_manual_verified"):
-        if not manual_company.strip():
-            st.warning("Enter the consultant name first.")
-        else:
-            rec = manual_blank_record(manual_category)
-            rec.update({
-                "company": manual_company.strip(),
-                "fee": manual_fee or None,
-                "sst": manual_sst.strip() or "Not stated",
-                "duration": manual_duration.strip(),
-                "filename": manual_source.strip() or "Manual entry",
-                "payment_terms": manual_payment.strip(),
-                "scope_summary": manual_scope.strip() + (("\n\nMethodology: " + manual_method.strip()) if manual_method.strip() else ""),
-                "methodology": manual_method.strip(),
-                "deliverables": manual_deliverables.strip(),
-                "notes": manual_notes.strip(),
-            })
-            rec["scope_status"] = infer_scope_status(
-                " ".join([rec["scope_summary"], rec["deliverables"], rec["notes"]]),
-                manual_category,
-            )
-            added, updated = merge_records(st.session_state.records, [rec])
-            st.success(f"Verified record saved to the in-memory database ({added} added, {updated} updated). Download the master CSV to keep it permanently.")
-            st.rerun()
+    with st.expander("Add quotation manually", expanded=False):
+        st.caption("Use this after checking the quotation yourself. Fields are grouped to make data entry quicker and easier to review.")
+
+        st.markdown("**Commercial details**")
+        mc1, mc2, mc3 = st.columns([1, 1.2, 1])
+        manual_category = mc1.selectbox("Category", ["Land Valuation", "Market Study"], key="manual_category")
+        manual_company = mc2.text_input("Consultant", key="manual_company")
+        manual_fee = mc3.number_input("Professional fee (RM)", min_value=0.0, value=0.0, step=500.0, key="manual_fee")
+        mm1, mm2 = st.columns(2)
+        manual_sst = mm1.text_input("SST treatment", key="manual_sst", placeholder="e.g. Additional 8%")
+        manual_duration = mm2.text_input("Completion period", key="manual_duration", placeholder="e.g. 14 working days")
+        manual_payment = st.text_area("Payment terms", key="manual_payment", height=80)
+
+        st.markdown("**Scope & deliverables**")
+        manual_scope = st.text_area("Scope summary", key="manual_scope", height=100)
+        manual_method = st.text_area("Methodology", key="manual_method", height=75)
+        manual_deliverables = st.text_area("Deliverables", key="manual_deliverables", height=75)
+
+        st.markdown("**Other terms & source**")
+        manual_source = st.text_input("Source PDF filename", key="manual_source", placeholder="e.g. Q V Citaglobal.pdf")
+        manual_notes = st.text_area("Notes / exclusions / validity", key="manual_notes", height=75)
+
+        duplicate_exists = bool(manual_company.strip()) and any(
+            str(r.get("company", "")).strip().lower() == manual_company.strip().lower()
+            and r.get("category") == manual_category
+            for r in st.session_state.records
+        )
+        confirm_update = True
+        if duplicate_exists:
+            st.warning("A record for this consultant and category already exists. Continuing will update the existing record.")
+            confirm_update = st.checkbox("Yes, update the existing record", key="manual_confirm_duplicate")
+
+        if st.button(
+            "Add verified record" if not duplicate_exists else "Update verified record",
+            key="add_manual_verified",
+            type="primary",
+            disabled=duplicate_exists and not confirm_update,
+        ):
+            if not manual_company.strip():
+                st.warning("Enter the consultant name first.")
+            else:
+                rec = manual_blank_record(manual_category)
+                rec.update({
+                    "company": manual_company.strip(),
+                    "fee": manual_fee or None,
+                    "sst": manual_sst.strip() or "Not stated",
+                    "duration": manual_duration.strip(),
+                    "filename": manual_source.strip() or "Manual entry",
+                    "payment_terms": manual_payment.strip(),
+                    "scope_summary": manual_scope.strip() + (("\n\nMethodology: " + manual_method.strip()) if manual_method.strip() else ""),
+                    "methodology": manual_method.strip(),
+                    "deliverables": manual_deliverables.strip(),
+                    "notes": manual_notes.strip(),
+                })
+                rec["scope_status"] = infer_scope_status(
+                    " ".join([rec["scope_summary"], rec["deliverables"], rec["notes"]]),
+                    manual_category,
+                )
+                added, updated = merge_records(st.session_state.records, [rec])
+                st.success(f"Verified record saved ({added} added, {updated} updated). Download the master CSV when you want a permanent copy.")
+                st.rerun()
 
     st.divider()
     st.subheader("Review database")
+    st.caption("Edits below apply immediately to the current session. Download the master CSV to save a permanent verified copy.")
     if not st.session_state.records:
         st.info("No quotation records loaded yet. Upload the CSV template or add a verified record manually.")
     else:
@@ -1881,103 +1983,126 @@ with tab1:
                         index=["Yes", "Partial", "No"].index(current),
                         key=f"db-scope-status-{idx}-{j}",
                     )
-                if st.button("Remove record", key=f"db-remove-{idx}"):
+                confirm_remove = st.checkbox(
+                    "Confirm removal of this record",
+                    key=f"db-confirm-remove-{idx}",
+                )
+                if st.button(
+                    "Remove record",
+                    key=f"db-remove-{idx}",
+                    disabled=not confirm_remove,
+                ):
                     st.session_state.records.pop(idx)
                     st.rerun()
 
-with tab2:
-    st.subheader("Optional PDF extraction assistant")
-    st.markdown(
-        '<div class="pro-note"><b>Important:</b> PDF extraction is an assistant only. Review the fields, then download the master CSV. '
-        'The CSV remains the recommended source of truth for future comparisons.</div>',
-        unsafe_allow_html=True,
-    )
-    c1, c2 = st.columns([1, 2])
-    category = c1.selectbox("Quotation type", ["Land Valuation", "Market Study"], key="pdf_category")
-    uploads = c2.file_uploader("Upload consultant quotation PDF(s)", type=["pdf"], accept_multiple_files=True, key="pdf_uploads")
-    if uploads and st.button("Extract PDF quotation(s)", type="primary", key="extract_pdfs"):
-        incoming = []
-        for u in uploads:
-            rec = make_record(u, category)
-            quality = assess_text_quality(rec["raw_text"], rec.get("page_count", 1))
-            should_scan = (
-                ai_provider == "OpenRouter"
-                and scan_mode != "Never scan PDF"
-                and (scan_mode == "Always scan PDF" or quality["poor"])
-            )
-            if should_scan:
-                if not ai_api_key:
-                    rec["scan_error"] = "OpenRouter API key is required for scanned-PDF recovery."
-                    st.warning(f"{u.name}: image-only/poor text detected, but no OpenRouter key is available. The CSV workflow can still be used manually.")
-                else:
+with tab1:
+    st.divider()
+    with st.expander("Optional PDF Assistant", expanded=False):
+        st.markdown("**PDF extraction assistant**")
+        st.markdown(
+            '<div class="pro-note"><b>Important:</b> PDF extraction is an assistant only. Review the fields, then download the master CSV. '
+            'The CSV remains the recommended source of truth for future comparisons.</div>',
+            unsafe_allow_html=True,
+        )
+        c1, c2 = st.columns([1, 2])
+        category = c1.selectbox("Quotation type", ["Land Valuation", "Market Study"], key="pdf_category")
+        uploads = c2.file_uploader("Upload consultant quotation PDF(s)", type=["pdf"], accept_multiple_files=True, key="pdf_uploads")
+        if uploads and st.button("Extract PDF quotation(s)", type="primary", key="extract_pdfs"):
+            incoming = []
+            for u in uploads:
+                rec = make_record(u, category)
+                quality = assess_text_quality(rec["raw_text"], rec.get("page_count", 1))
+                should_scan = (
+                    ai_provider == "OpenRouter"
+                    and scan_mode != "Never scan PDF"
+                    and (scan_mode == "Always scan PDF" or quality["poor"])
+                )
+                if should_scan:
+                    if not ai_api_key:
+                        rec["scan_error"] = "OpenRouter API key is required for scanned-PDF recovery."
+                        st.warning(f"{u.name}: image-only/poor text detected, but no OpenRouter key is available. The CSV workflow can still be used manually.")
+                    else:
+                        try:
+                            with st.spinner(f"Recovering scanned PDF {u.name}..."):
+                                pdf_bytes = u.getvalue()
+                                if scan_engine == "vision-ocr":
+                                    scanned_text, scan_meta = openrouter_vision_ocr(pdf_bytes, u.name, ai_api_key, ai_model)
+                                    method_label = "Page-image Vision OCR + heuristic"
+                                else:
+                                    scanned_text, scan_meta = openrouter_pdf_scan(pdf_bytes, u.name, ai_api_key, ai_model, engine=scan_engine)
+                                    method_label = f"OpenRouter PDF scan ({scan_engine}) + heuristic"
+                                rec = make_record(u, category, text_override=scanned_text, extraction_method=method_label, scan_meta=scan_meta)
+                            st.success(f"{u.name}: scanned-PDF text recovered.")
+                        except Exception as e:
+                            rec["scan_error"] = str(e)
+                            st.error(f"{u.name}: scanned-PDF recovery failed: {e}")
+                if ai_enabled and ai_api_key:
                     try:
-                        with st.spinner(f"Recovering scanned PDF {u.name}..."):
-                            pdf_bytes = u.getvalue()
-                            if scan_engine == "vision-ocr":
-                                scanned_text, scan_meta = openrouter_vision_ocr(pdf_bytes, u.name, ai_api_key, ai_model)
-                                method_label = "Page-image Vision OCR + heuristic"
-                            else:
-                                scanned_text, scan_meta = openrouter_pdf_scan(pdf_bytes, u.name, ai_api_key, ai_model, engine=scan_engine)
-                                method_label = f"OpenRouter PDF scan ({scan_engine}) + heuristic"
-                            rec = make_record(u, category, text_override=scanned_text, extraction_method=method_label, scan_meta=scan_meta)
-                        st.success(f"{u.name}: scanned-PDF text recovered.")
+                        with st.spinner(f"Structuring {u.name} with {ai_provider}..."):
+                            ai_result = ai_extract_quotation(ai_provider, rec["raw_text"], category, st.session_state.get("rfq_text", ""), ai_api_key, ai_model)
+                            rec = apply_ai_result(rec, ai_result, ai_provider)
+                            rec["extraction_method"] = rec.get("extraction_method", "PDF") + " + AI structured extraction"
                     except Exception as e:
-                        rec["scan_error"] = str(e)
-                        st.error(f"{u.name}: scanned-PDF recovery failed: {e}")
-            if ai_enabled and ai_api_key:
-                try:
-                    with st.spinner(f"Structuring {u.name} with {ai_provider}..."):
-                        ai_result = ai_extract_quotation(ai_provider, rec["raw_text"], category, st.session_state.get("rfq_text", ""), ai_api_key, ai_model)
-                        rec = apply_ai_result(rec, ai_result, ai_provider)
-                        rec["extraction_method"] = rec.get("extraction_method", "PDF") + " + AI structured extraction"
-                except Exception as e:
-                    rec["ai_error"] = str(e)
-                    st.warning(f"{u.name}: structured AI extraction failed; heuristic results retained. {e}")
-            rec["csv_source"] = False
-            incoming.append(rec)
-        added, updated = merge_records(st.session_state.records, incoming)
-        st.success(f"PDF assistant finished: {added} added, {updated} updated. Review these records in the CSV Database tab and export the master CSV.")
-        st.rerun()
+                        rec["ai_error"] = str(e)
+                        st.warning(f"{u.name}: structured AI extraction failed; heuristic results retained. {e}")
+                rec["csv_source"] = False
+                incoming.append(rec)
+            added, updated = merge_records(st.session_state.records, incoming)
+            st.success(f"PDF assistant finished: {added} added, {updated} updated. Review these records in the CSV Database tab and export the master CSV.")
+            st.rerun()
 
-    if st.session_state.records:
-        st.markdown("### Current PDF-assisted / database records")
-        preview = records_to_master_csv(st.session_state.records)[[
-            "Consultant", "Category", "Professional Fee RM", "SST Treatment", "Completion Period", "Source File"
-        ]]
-        st.dataframe(preview, use_container_width=True, hide_index=True)
+        if st.session_state.records:
+            st.markdown("### Current PDF-assisted / database records")
+            preview = records_to_master_csv(st.session_state.records)[[
+                "Consultant", "Category", "Professional Fee RM", "SST Treatment", "Completion Period", "Source File"
+            ]]
+            st.dataframe(preview, use_container_width=True, hide_index=True)
 
-with tab3:
+with tab2:
+    st.subheader("Quotation comparison")
     cat = st.radio("View comparison", ["Land Valuation", "Market Study"], horizontal=True, key="comparison_category")
     subset = [r for r in st.session_state.records if r["category"] == cat]
+
     if not subset:
-        st.info(f"No {cat} quotations loaded.")
+        st.info(f"No {cat} quotations loaded. Add or load quotation records in the Data tab first.")
     else:
-        st.subheader("Scoring weights")
-        cols = st.columns(len(DEFAULT_WEIGHTS[cat]))
+        # Read the current scoring settings from session state so the results stay prominent.
         weights = {}
-        for i, (k, v) in enumerate(DEFAULT_WEIGHTS[cat].items()):
-            weights[k] = cols[i].number_input(k, 0, 100, v, 5, key=f"w-v10-{cat}-{i}")
-        if sum(weights.values()) != 100:
-            st.warning(f"Weights total {sum(weights.values())}%. Set them to 100% for a clean comparison.")
-        scores = compute_scores(st.session_state.records, cat, weights)
+        for i, (k, default_value) in enumerate(DEFAULT_WEIGHTS[cat].items()):
+            weights[k] = st.session_state.get(f"w-v10-{cat}-{i}", default_value)
+
+        weight_total = sum(weights.values())
+        if weight_total > 0 and weight_total != 100:
+            score_weights = {k: (v / weight_total) * 100 for k, v in weights.items()}
+        elif weight_total == 0:
+            score_weights = DEFAULT_WEIGHTS[cat].copy()
+        else:
+            score_weights = weights
+
+        scores = compute_scores(st.session_state.records, cat, score_weights)
         winner = scores[0]
         valid_fees = [float(r.get("fee") or 0) for r in subset if float(r.get("fee") or 0) > 0]
         lowest_fee = min(valid_fees) if valid_fees else 0
         valid_days = [(duration_to_days(r.get("duration", "")), r.get("duration", "")) for r in subset]
         valid_days = [x for x in valid_days if x[0] is not None]
         fastest_label = min(valid_days, key=lambda x: x[0])[1] if valid_days else "Not stated"
-        k1, k2, k3, k4 = st.columns(4)
-        k1.metric("Consultants reviewed", len(subset))
-        k2.metric("Lowest quoted fee", f"RM {lowest_fee:,.0f}" if lowest_fee else "Not stated")
-        k3.metric("Fastest completion", fastest_label or "Not stated")
-        k4.metric("Current leader", f'{winner[0]["company"]} · {winner[1]}/100')
+
+        safe_winner = html.escape(str(winner[0].get("company", "Consultant")))
         st.markdown(
-            f'<div class="pro-note"><b>Indicative recommendation:</b> {winner[0]["company"]} currently ranks highest at {winner[1]}/100 under the selected scoring weights. Confirm scope and commercial terms before appointment.</div>',
+            f'<div class="pro-note"><b>Indicative recommendation:</b> {safe_winner} currently ranks highest at '
+            f'{winner[1]}/100. Confirm scope, fee basis and commercial terms before appointment.</div>',
             unsafe_allow_html=True,
         )
+
+        k1, k2, k3, k4 = st.columns(4)
+        k1.metric("Current leader", f'{winner[0]["company"]} · {winner[1]}/100')
+        k2.metric("Lowest quoted fee", f"RM {lowest_fee:,.0f}" if lowest_fee else "Not stated")
+        k3.metric("Fastest completion", fastest_label or "Not stated")
+        k4.metric("Consultants reviewed", len(subset))
+
+        st.markdown("### Detailed comparison")
         df = pd.DataFrame([{
             "Consultant": r["company"],
-            "Data source": r.get("extraction_method", "CSV"),
             "Fee (RM)": r.get("fee"),
             "SST": r.get("sst", ""),
             "Disbursement": r.get("disbursement", ""),
@@ -1987,11 +2112,31 @@ with tab3:
             "Overall Score": total,
         } for r, total, _ in scores])
         st.dataframe(df, use_container_width=True, hide_index=True)
-        chart = pd.DataFrame({"Consultant": [r["company"] for r, t, c in scores], "Overall Score": [t for r, t, c in scores]}).set_index("Consultant")
-        st.bar_chart(chart)
-        st.caption("The score is decision-support only. Verified CSV data should still be checked against the signed/final quotation before appointment.")
 
-with tab4:
+        chart = pd.DataFrame({
+            "Consultant": [r["company"] for r, t, c in scores],
+            "Overall Score": [t for r, t, c in scores],
+        }).set_index("Consultant")
+        st.bar_chart(chart)
+
+        with st.expander("Customize scoring", expanded=False):
+            st.caption("The dashboard uses the recommended weighting by default. Adjust only when Management wants a different emphasis.")
+            cols = st.columns(len(DEFAULT_WEIGHTS[cat]))
+            edited_weights = {}
+            for i, (k, v) in enumerate(DEFAULT_WEIGHTS[cat].items()):
+                edited_weights[k] = cols[i].number_input(k, 0, 100, v, 5, key=f"w-v10-{cat}-{i}")
+            edited_total = sum(edited_weights.values())
+            if edited_total != 100:
+                st.warning(
+                    f"Weights currently total {edited_total}%. For usability, the dashboard normalizes them to 100% for the ranking. "
+                    "Set them to exactly 100% if you want the displayed values to match the calculation directly."
+                )
+            else:
+                st.success("Weights total 100%.")
+
+        st.caption("Decision-support only. Check the verified CSV against the signed/final quotation before appointment.")
+
+with tab3:
     cat = st.radio("Scope matrix", ["Land Valuation", "Market Study"], horizontal=True, key="scope_matrix_category")
     subset = [r for r in st.session_state.records if r["category"] == cat]
     if not subset:
@@ -2005,31 +2150,25 @@ with tab4:
             rows.append(row)
         st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
-with tab5:
+with tab4:
+    st.subheader("Management report")
     if not st.session_state.records:
-        st.info("No quotations loaded.")
+        st.info("No quotations loaded. Add or load quotation records in the Data tab first.")
     else:
-        master_df = records_to_master_csv(st.session_state.records)
-        st.subheader("Master CSV")
-        st.dataframe(master_df, use_container_width=True, hide_index=True)
-        st.download_button(
-            "Download master quotation CSV",
-            master_df.to_csv(index=False).encode("utf-8-sig"),
-            "quotation_master.csv",
-            "text/csv",
-            type="primary",
-        )
-        st.caption("Keep this CSV as the verified database. Next time, load it directly in Tab 1; you do not need to OCR the same PDFs again.")
-
         lines = []
-        for cat in ["Land Valuation", "Market Study"]:
-            subset = [r for r in st.session_state.records if r["category"] == cat]
-            if subset:
-                scores = compute_scores(st.session_state.records, cat, DEFAULT_WEIGHTS[cat])
-                r, score, _ = scores[0]
-                lines.append(f"{cat}: Recommend {r['company']} based on the current scoring model ({score}/100), subject to final scope and commercial confirmation.")
+        for report_cat in ["Land Valuation", "Market Study"]:
+            report_subset = [r for r in st.session_state.records if r["category"] == report_cat]
+            if report_subset:
+                report_scores = compute_scores(st.session_state.records, report_cat, DEFAULT_WEIGHTS[report_cat])
+                report_record, report_score, _ = report_scores[0]
+                lines.append(
+                    f"{report_cat}: Recommend {report_record['company']} based on the default scoring model "
+                    f"({report_score}/100), subject to final scope and commercial confirmation."
+                )
         fallback_summary = "\n\n".join(lines)
+
         st.markdown("### Management recommendation")
+        st.caption("Start with the recommendation, then review/export the supporting database below.")
         if st.button("Generate Management Recommendation", type="primary", key="v10_management_recommendation"):
             if ai_provider == "OpenRouter" and ai_api_key:
                 try:
@@ -2046,36 +2185,69 @@ with tab5:
                     st.session_state.management_recommendation = fallback_summary
             else:
                 st.session_state.management_recommendation = fallback_summary
-        st.text_area("Management-ready recommendation", st.session_state.get("management_recommendation", fallback_summary), height=240, key="v10_management_text")
+        st.text_area(
+            "Management-ready recommendation",
+            st.session_state.get("management_recommendation", fallback_summary),
+            height=220,
+            key="v10_management_text",
+        )
 
-with tab6:
-    st.subheader("Optional AI quotation analyst")
-    st.caption("The analyst reads the structured database, not the PDFs. This keeps PDF extraction separate from decision analysis.")
-    if not st.session_state.records:
-        st.info("Load the quotation CSV first.")
-    elif ai_provider != "OpenRouter":
-        st.info("The interactive analyst currently uses OpenRouter. Select OpenRouter in the sidebar if you want to use it.")
-    elif not ai_api_key:
-        st.warning("No OpenRouter key is loaded. The CSV comparison dashboard continues to work without AI.")
-    else:
-        examples = [
-            "Which consultant offers the best overall value and why?",
-            "Compare only the Market Study scope.",
-            "What clarification questions should I send before appointment?",
-            "Draft a concise Management recommendation.",
-        ]
-        chosen = st.selectbox("Quick question", ["Custom question"] + examples, key="v10_quick_question")
-        question = st.text_area("Ask the analyst", value="" if chosen == "Custom question" else chosen, height=100, key="v10_question")
-        if st.button("Ask AI Analyst", type="primary", key="v10_ask_ai"):
-            if not question.strip():
-                st.warning("Enter a question first.")
+        st.divider()
+        st.markdown("### Export verified database")
+        master_df = records_to_master_csv(st.session_state.records)
+        st.download_button(
+            "Download master quotation CSV",
+            master_df.to_csv(index=False).encode("utf-8-sig"),
+            "quotation_master.csv",
+            "text/csv",
+            type="primary",
+            use_container_width=True,
+        )
+        st.caption("Keep this CSV as the verified source of truth. Re-upload it in the Data tab next time; you do not need to process the same PDFs again.")
+        with st.expander("Preview master CSV", expanded=False):
+            st.dataframe(master_df, use_container_width=True, hide_index=True)
+
+        st.divider()
+        with st.expander("Optional AI Analyst", expanded=False):
+            st.caption("Advanced tool. The analyst reads the structured database, not the PDFs.")
+            if ai_provider != "OpenRouter":
+                st.info("To use the interactive analyst, choose OpenRouter under Advanced settings in the sidebar.")
+            elif not ai_api_key:
+                st.warning("No OpenRouter key is loaded. The comparison and report continue to work without AI.")
             else:
-                try:
-                    with st.spinner("Analysing verified quotation data..."):
-                        answer = openrouter_chat(st.session_state.records, st.session_state.get("rfq_text", ""), question, ai_api_key, ai_model)
-                    st.markdown(answer)
-                except Exception as e:
-                    st.error(f"AI Analyst failed: {e}")
+                st.warning(
+                    "The question and relevant quotation / RFQ data may be sent to the external AI provider. "
+                    "Use this only where external processing is approved."
+                )
+                examples = [
+                    "Which consultant offers the best overall value and why?",
+                    "Compare only the Market Study scope.",
+                    "What clarification questions should I send before appointment?",
+                    "Draft a concise Management recommendation.",
+                ]
+                chosen = st.selectbox("Quick question", ["Custom question"] + examples, key="v10_quick_question")
+                question = st.text_area(
+                    "Ask the analyst",
+                    value="" if chosen == "Custom question" else chosen,
+                    height=100,
+                    key="v10_question",
+                )
+                if st.button("Ask AI Analyst", type="primary", key="v10_ask_ai"):
+                    if not question.strip():
+                        st.warning("Enter a question first.")
+                    else:
+                        try:
+                            with st.spinner("Analysing verified quotation data..."):
+                                answer = openrouter_chat(
+                                    st.session_state.records,
+                                    st.session_state.get("rfq_text", ""),
+                                    question,
+                                    ai_api_key,
+                                    ai_model,
+                                )
+                            st.markdown(answer)
+                        except Exception as e:
+                            st.error(f"AI Analyst failed: {e}")
 
 st.divider()
 st.caption("V10 · CSV-first workflow. Keep the exported master CSV as the verified database; PDF/AI extraction is optional assistance only.")
