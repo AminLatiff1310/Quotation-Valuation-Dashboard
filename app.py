@@ -226,7 +226,25 @@ textarea:disabled, input:disabled,
   border: 1.5px dashed rgba(16,32,51,.26) !important;
   border-radius: 12px !important;
 }
-[data-testid="stFileUploaderDropzone"] * { color: var(--bp-ink) !important; }
+[data-testid="stFileUploaderDropzone"] p,
+[data-testid="stFileUploaderDropzone"] span,
+[data-testid="stFileUploaderDropzone"] small,
+[data-testid="stFileUploaderDropzone"] div {
+    color: #334155 !important;
+    -webkit-text-fill-color: #334155 !important;
+    opacity: 1 !important;
+}
+
+[data-testid="stFileUploaderDropzone"] [data-testid="stFileUploaderDropzoneInstructions"] span {
+    color: #102033 !important;
+    -webkit-text-fill-color: #102033 !important;
+    font-weight: 700 !important;
+}
+
+[data-testid="stFileUploaderDropzone"] small {
+    color: #5F6872 !important;
+    -webkit-text-fill-color: #5F6872 !important;
+}
 [data-testid="stFileUploaderDropzone"] button {
   background: var(--bp-navy) !important;
   color: #fff !important;
