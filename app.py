@@ -1811,7 +1811,20 @@ st.markdown(
 )
 
 with st.sidebar:
+    st.markdown(
+        """
+        <div style="
+            background:#FFFFFF;
+            padding:14px 16px;
+            border-radius:12px;
+            margin-bottom:18px;
+            text-align:center;
+        ">
+        """,
+        unsafe_allow_html=True,
+    )
     st.image("CG.png", width=170)
+    st.markdown("</div>", unsafe_allow_html=True)
     st.header("Project / RFQ")
     st.caption("Keep the everyday workflow simple. Advanced AI and project tools are available below when needed.")
     st.text_area(
