@@ -152,20 +152,6 @@ label, [data-testid="stWidgetLabel"] p {
   border-color: var(--bp-line);
 }
 
-/* Sidebar company logo */
-.sidebar-logo {
-    background: #FFFDF8;
-    padding: 14px 16px;
-    border-radius: 12px;
-    margin-bottom: 22px;
-    text-align: center;
-}
-
-.sidebar-logo img {
-    display: block;
-    margin: 0 auto;
-}
-
 /* Left rail / sidebar */
 [data-testid="stSidebar"] {
   background: linear-gradient(180deg, #0d2033 0%, #142d45 100%) !important;
@@ -1825,9 +1811,7 @@ st.markdown(
 )
 
 with st.sidebar:
-    st.markdown('<div class="sidebar-logo">', unsafe_allow_html=True)
-    st.image("company_logo.png", width=170)
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.image("CG.png", width=170)
     st.header("Project / RFQ")
     st.caption("Keep the everyday workflow simple. Advanced AI and project tools are available below when needed.")
     st.text_area(
