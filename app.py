@@ -269,7 +269,11 @@ textarea:disabled, input:disabled,
   border: 1px solid var(--bp-navy) !important;
   border-radius: 8px !important;
 }
-[data-testid="stFileUploaderDropzone"] button * { color: #FFFFFF !important; }
+
+[data-testid="stFileUploaderDropzone"] button * {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
 
 /* KPI / metric cards mirror the blueprint paper tiles */
 [data-testid="stMetric"] {
