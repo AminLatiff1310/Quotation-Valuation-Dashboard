@@ -265,7 +265,7 @@ textarea:disabled, input:disabled,
 }
 [data-testid="stFileUploaderDropzone"] button {
   background: var(--bp-navy) !important;
-  color: #fff !important;
+  color: #FFFFFF !important;
   border: 1px solid var(--bp-navy) !important;
   border-radius: 8px !important;
 }
@@ -428,6 +428,7 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--bp-coral) !imp
   border-left: 4px solid var(--bp-coral);
   border-radius: 9px;
   padding: 12px 14px;
+  margin-bottom: 18px;
   color: var(--bp-ink) !important;
   font-size: .86rem;
 }
@@ -1959,7 +1960,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
 with tab1:
     st.subheader("CSV quotation database")
     st.markdown(
-        '<div class="pro-note"><b>Recommended workflow:</b> treat the CSV as the verified source of truth. '
+        '<div class="pro-note"><b>Recommended workflow:</b> Treat the CSV as the verified source of truth. '
         'Start by loading the verified master CSV. Manual entry and PDF assistance are optional secondary workflows.</div>',
         unsafe_allow_html=True,
     )
