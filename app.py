@@ -367,6 +367,34 @@ div[data-testid="stHorizontalBlock"] > div:nth-child(4n+4) [data-testid="stMetri
 [data-testid="stExpander"] summary,
 [data-testid="stExpander"] summary * { color: var(--bp-ink) !important; font-weight: 750 !important; }
 
+/* Sidebar expander headers - Advanced Settings & Project Tools */
+[data-testid="stSidebar"] [data-testid="stExpander"] {
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  border-radius: 10px !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stExpander"] summary {
+  padding: 12px 14px !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stExpander"] summary p,
+[data-testid="stSidebar"] [data-testid="stExpander"] summary span,
+[data-testid="stSidebar"] [data-testid="stExpander"] summary div {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+  opacity: 1 !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stExpander"] summary svg {
+  color: #FFFFFF !important;
+  fill: #FFFFFF !important;
+}
+
 /* Dataframe / data editor: light paper with navy header treatment */
 [data-testid="stDataFrame"] {
   border: 1px solid var(--bp-line) !important;
