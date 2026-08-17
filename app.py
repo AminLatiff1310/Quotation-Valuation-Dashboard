@@ -2008,7 +2008,6 @@ with st.sidebar:
             use_container_width=True,
         ):
             st.session_state.records = []
-            st.session_state.confirm_clear_all = False
             st.rerun()
 
 tab1, tab2, tab3, tab4 = st.tabs([
