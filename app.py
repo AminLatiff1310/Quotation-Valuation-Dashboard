@@ -27,7 +27,7 @@ except ImportError:
     OpenAI = None
 
 st.set_page_config(
-    page_title="Consultant Quotation Database",
+    page_title="Consultant Quotation Evaluation",
     page_icon="📑",
     layout="wide",
     initial_sidebar_state="expanded",
