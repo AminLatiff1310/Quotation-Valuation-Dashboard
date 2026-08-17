@@ -367,7 +367,7 @@ div[data-testid="stHorizontalBlock"] > div:nth-child(4n+4) [data-testid="stMetri
 [data-testid="stExpander"] summary,
 [data-testid="stExpander"] summary * { color: var(--bp-ink) !important; font-weight: 750 !important; }
 
-/* Sidebar expander headers - Advanced Settings & Project Tools */
+/* Sidebar expander headers - clean and readable */
 [data-testid="stSidebar"] [data-testid="stExpander"] {
   background: rgba(255,255,255,.06) !important;
   border: 1px solid rgba(255,255,255,.14) !important;
@@ -378,21 +378,26 @@ div[data-testid="stHorizontalBlock"] > div:nth-child(4n+4) [data-testid="stMetri
   padding: 12px 14px !important;
 }
 
-[data-testid="stSidebar"] [data-testid="stExpander"] summary p,
-[data-testid="stSidebar"] [data-testid="stExpander"] summary span,
-[data-testid="stSidebar"] [data-testid="stExpander"] summary div {
+/* Only style the visible expander title */
+[data-testid="stSidebar"] [data-testid="stExpander"] summary p {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
   font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
   font-size: 0.92rem !important;
   font-weight: 700 !important;
   line-height: 1.35 !important;
-  opacity: 1 !important;
+  margin: 0 !important;
 }
 
+/* Keep Streamlit arrow as an icon, not visible text */
 [data-testid="stSidebar"] [data-testid="stExpander"] summary svg {
   color: #FFFFFF !important;
   fill: #FFFFFF !important;
+}
+
+/* Hide any internal material-icon text if Streamlit renders it as text */
+[data-testid="stSidebar"] [data-testid="stExpander"] summary [data-testid="stIconMaterial"] {
+  font-size: 0 !important;
 }
 
 /* Dataframe / data editor: light paper with navy header treatment */
