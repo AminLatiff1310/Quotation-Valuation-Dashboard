@@ -1789,8 +1789,8 @@ def openrouter_chat(records, rfq_text, question, api_key, model):
 st.markdown(
     """
     <div class="pro-header">
-      <h1>Consultant Quotation Database</h1>
-      <p>CSV-first consultant quotation database with optional PDF extraction, structured comparison and Management decision support.</p>
+      <h1>Consultant Quotation Evaluation</h1>
+      <p>CSV-first consultant quotation evaluation with optional PDF extraction, structured comparison and Management decision support.</p>
       <span class="pro-chip">CSV source of truth</span>
       <span class="pro-chip">Executive comparison</span>
       <span class="pro-chip">Optional PDF / AI tools</span>
