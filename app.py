@@ -87,15 +87,28 @@ html, body, [class*="css"], .stApp {
 
 /* Editorial typography */
 h1, h2, h3, h4 { color: var(--bp-ink) !important; }
-h1 { font-family: Georgia, 'Times New Roman', serif !important; letter-spacing: -.035em; }
-h2, h3 { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important; letter-spacing: -.02em; }
-.stMarkdown p, .stMarkdown li, [data-testid="stCaptionContainer"], .stCaption {
-  color: var(--bp-muted) !important;
-  line-height: 1.58 !important;
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+  letter-spacing: -.02em;
+  color: var(--bp-ink) !important;
+}
+h1 { font-weight: 800 !important; }
+h2 { font-size: 1.55rem !important; font-weight: 800 !important; }
+h3 { font-size: 1.18rem !important; font-weight: 750 !important; }
+.stMarkdown p, .stMarkdown li {
+  color: var(--bp-ink) !important;
+  line-height: 1.62 !important;
+  font-size: .94rem !important;
+}
+[data-testid="stCaptionContainer"], .stCaption {
+  color: #4f5b66 !important;
+  line-height: 1.5 !important;
+  font-size: .80rem !important;
 }
 label, [data-testid="stWidgetLabel"] p {
   color: var(--bp-ink) !important;
   font-weight: 700 !important;
+  font-size: .88rem !important;
 }
 
 /* Editorial masthead */
@@ -108,14 +121,14 @@ label, [data-testid="stWidgetLabel"] p {
 .pro-header * { color: var(--bp-ink) !important; }
 .pro-header h1 {
   margin: 0 0 9px 0;
-  font-size: clamp(2.05rem, 3.4vw, 3.25rem);
-  font-weight: 700;
-  line-height: .96;
+  font-size: clamp(2rem, 3vw, 2.65rem);
+  font-weight: 800;
+  line-height: 1.05;
 }
 .pro-header p {
   margin: 0;
   color: var(--bp-muted) !important;
-  font-size: .93rem;
+  font-size: .90rem;
   max-width: 78ch;
 }
 .pro-chip {
@@ -127,7 +140,7 @@ label, [data-testid="stWidgetLabel"] p {
   border-radius: 7px;
   background: var(--bp-white);
   color: var(--bp-ink) !important;
-  font-size: .69rem;
+  font-size: .72rem;
   font-weight: 800;
   letter-spacing: .055em;
   text-transform: uppercase;
@@ -153,9 +166,14 @@ label, [data-testid="stWidgetLabel"] p {
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] span,
 [data-testid="stSidebar"] label,
-[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p { color: #d3e0e8 !important; }
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+  color: #f2f6f8 !important;
+  font-size: .86rem !important;
+}
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p { font-weight: 700 !important; }
 [data-testid="stSidebar"] .stCaption,
-[data-testid="stSidebar"] small { color: #a8bdca !important; }
+[data-testid="stSidebar"] small { color: #c4d2db !important; font-size: .77rem !important; }
 [data-testid="stSidebar"] hr { border-color: rgba(255,255,255,.12) !important; }
 [data-testid="stSidebar"] .pro-section { color: #efb49e !important; }
 
@@ -274,11 +292,11 @@ textarea:disabled, input:disabled,
 div[data-testid="stHorizontalBlock"] > div:nth-child(4n+2) [data-testid="stMetric"]::before { background: var(--bp-coral); }
 div[data-testid="stHorizontalBlock"] > div:nth-child(4n+3) [data-testid="stMetric"]::before { background: var(--bp-gold); }
 div[data-testid="stHorizontalBlock"] > div:nth-child(4n+4) [data-testid="stMetric"]::before { background: var(--bp-sage); }
-[data-testid="stMetricLabel"] * { color: #777b80 !important; font-weight: 750 !important; }
+[data-testid="stMetricLabel"] * { color: #4f5b66 !important; font-weight: 750 !important; font-size: .82rem !important; }
 [data-testid="stMetricValue"] * {
   color: var(--bp-ink) !important;
-  font-family: Georgia, 'Times New Roman', serif !important;
-  font-size: 2rem !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+  font-size: 1.72rem !important;
   font-weight: 700 !important;
   letter-spacing: -.045em !important;
 }
@@ -293,11 +311,18 @@ div[data-testid="stHorizontalBlock"] > div:nth-child(4n+4) [data-testid="stMetri
   border: 1px solid var(--bp-line);
 }
 [data-baseweb="tab"] {
-  border-radius: 7px;
-  color: #6f7478 !important;
-  min-height: 44px;
+  border-radius: 8px;
+  color: #384653 !important;
+  min-height: 54px !important;
+  padding: 0 22px !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
 }
-[data-baseweb="tab"] * { color: #6f7478 !important; }
+[data-baseweb="tab"] * {
+  color: #384653 !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+}
 [data-baseweb="tab"][aria-selected="true"] {
   background: var(--bp-navy) !important;
   color: #fff !important;
@@ -420,8 +445,86 @@ a { color: var(--bp-blue) !important; }
 ::-webkit-scrollbar-thumb { background: #8996a0; border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: #6f7d88; }
 
-/* Streamlit status / toolbar surfaces */
-[data-testid="stStatusWidget"], [data-testid="stToolbar"] { color: var(--bp-ink) !important; }
+/* Streamlit top header / toolbar: strong contrast */
+[data-testid="stHeader"] {
+  background: #0d2033 !important;
+  border-bottom: 1px solid rgba(255,255,255,.10) !important;
+}
+[data-testid="stHeader"] *,
+[data-testid="stToolbar"] *,
+[data-testid="stStatusWidget"] * {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+[data-testid="stHeader"] button,
+[data-testid="stToolbar"] button {
+  color: #ffffff !important;
+}
+[data-testid="stHeader"] svg,
+[data-testid="stToolbar"] svg {
+  fill: #ffffff !important;
+  color: #ffffff !important;
+}
+[data-testid="stAppDeployButton"] {
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,.28) !important;
+}
+[data-testid="stStatusWidget"] { color: #ffffff !important; }
+
+
+/* Readable business tables - consistent with the light Executive Blueprint theme */
+.bp-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--bp-line);
+  border-radius: 10px;
+  background: var(--bp-white);
+  box-shadow: 0 7px 22px rgba(16,32,51,.04);
+  margin: .45rem 0 1rem;
+}
+.bp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+  font-size: .84rem;
+  color: var(--bp-ink);
+  min-width: 760px;
+}
+.bp-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bp-navy);
+  color: #ffffff !important;
+  font-weight: 750;
+  text-align: left;
+  padding: 11px 12px;
+  border-right: 1px solid rgba(255,255,255,.10);
+  white-space: nowrap;
+}
+.bp-table tbody td {
+  background: var(--bp-white);
+  color: var(--bp-ink) !important;
+  padding: 10px 12px;
+  border-top: 1px solid var(--bp-soft-line);
+  vertical-align: top;
+  line-height: 1.45;
+}
+.bp-table tbody tr:nth-child(even) td { background: #f8f4ed; }
+.bp-table tbody tr:hover td { background: #edf2f4; }
+.bp-score-bars { margin: .4rem 0 1rem; }
+.bp-score-row {
+  display: grid;
+  grid-template-columns: minmax(210px, 1.4fr) 3fr 72px;
+  gap: 12px;
+  align-items: center;
+  margin: 10px 0;
+  font-size: .87rem;
+}
+.bp-score-name { color: var(--bp-ink); font-weight: 700; }
+.bp-score-track { height: 13px; background: #e1ddd5; border-radius: 999px; overflow: hidden; }
+.bp-score-fill { height: 100%; background: var(--bp-blue); border-radius: 999px; }
+.bp-score-value { color: var(--bp-ink); font-weight: 800; text-align: right; }
 
 @media (max-width: 900px) {
   [data-testid="stAppViewContainer"] > .main { margin: 0; border-radius: 0; }
@@ -435,6 +538,8 @@ a { color: var(--bp-blue) !important; }
   [data-baseweb="tab"] {
     flex: 0 0 auto !important;
     white-space: nowrap !important;
+    min-height: 50px !important;
+    padding: 0 18px !important;
   }
   [data-testid="stMetric"] { min-height: 108px; }
 }
@@ -443,11 +548,43 @@ a { color: var(--bp-blue) !important; }
   .block-container { padding-left: .75rem; padding-right: .75rem; }
   .pro-header { padding-bottom: 16px; margin-bottom: 16px; }
   .pro-header h1 { font-size: 1.7rem; line-height: 1.03; }
-  .pro-chip { font-size: .62rem; padding: 5px 8px; }
+  .pro-chip { font-size: .68rem; padding: 5px 8px; }
+  [data-baseweb="tab"] *, [data-baseweb="tab"] { font-size: .92rem !important; }
+  .bp-score-row { grid-template-columns: 1fr; gap: 5px; }
+  .bp-score-value { text-align: left; }
 }
 </style>
 """
 st.markdown(PRO_CSS, unsafe_allow_html=True)
+
+
+
+def render_readable_table(df):
+    """Render a light, readable HTML table instead of Streamlit's canvas dataframe."""
+    if df is None or df.empty:
+        st.info("No data available.")
+        return
+    display_df = df.copy()
+    for col in display_df.columns:
+        display_df[col] = display_df[col].map(lambda v: "" if pd.isna(v) else v)
+    table_html = display_df.to_html(index=False, escape=True, classes="bp-table", border=0)
+    st.markdown(f'<div class="bp-table-wrap">{table_html}</div>', unsafe_allow_html=True)
+
+
+def render_score_bars(scores):
+    """Dependency-free score visualisation to avoid Altair/Streamlit chart errors."""
+    rows = []
+    for record, total, _ in scores:
+        name = html.escape(str(record.get("company", "Consultant")))
+        score = max(0.0, min(100.0, float(total or 0)))
+        rows.append(
+            f'<div class="bp-score-row">'
+            f'<div class="bp-score-name">{name}</div>'
+            f'<div class="bp-score-track"><div class="bp-score-fill" style="width:{score:.1f}%"></div></div>'
+            f'<div class="bp-score-value">{score:.1f}/100</div>'
+            f'</div>'
+        )
+    st.markdown('<div class="bp-score-bars">' + ''.join(rows) + '</div>', unsafe_allow_html=True)
 
 DEFAULT_WEIGHTS = {
     "Land Valuation": {
@@ -1813,10 +1950,10 @@ with st.sidebar:
             st.rerun()
 
 tab1, tab2, tab3, tab4 = st.tabs([
-    "Data",
-    "Compare",
-    "Scope",
-    "Report",
+    "1. Data",
+    "2. Compare",
+    "3. Scope",
+    "4. Report",
 ])
 
 with tab1:
@@ -2056,7 +2193,7 @@ with tab1:
             preview = records_to_master_csv(st.session_state.records)[[
                 "Consultant", "Category", "Professional Fee RM", "SST Treatment", "Completion Period", "Source File"
             ]]
-            st.dataframe(preview, use_container_width=True, hide_index=True)
+            render_readable_table(preview)
 
 with tab2:
     st.subheader("Quotation comparison")
@@ -2101,6 +2238,7 @@ with tab2:
         k4.metric("Consultants reviewed", len(subset))
 
         st.markdown("### Detailed comparison")
+        st.caption("Scroll horizontally if needed. The table uses a light background for easier office viewing.")
         df = pd.DataFrame([{
             "Consultant": r["company"],
             "Fee (RM)": r.get("fee"),
@@ -2111,13 +2249,10 @@ with tab2:
             "Scope Score": round(scope_numeric(r.get("scope_status", {})), 1),
             "Overall Score": total,
         } for r, total, _ in scores])
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        render_readable_table(df)
 
-        chart = pd.DataFrame({
-            "Consultant": [r["company"] for r, t, c in scores],
-            "Overall Score": [t for r, t, c in scores],
-        }).set_index("Consultant")
-        st.bar_chart(chart)
+        st.markdown("### Overall score")
+        render_score_bars(scores)
 
         with st.expander("Customize scoring", expanded=False):
             st.caption("The dashboard uses the recommended weighting by default. Adjust only when Management wants a different emphasis.")
@@ -2148,7 +2283,7 @@ with tab3:
             for r in subset:
                 row[r["company"]] = r.get("scope_status", {}).get(item, "No")
             rows.append(row)
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        render_readable_table(pd.DataFrame(rows))
 
 with tab4:
     st.subheader("Management report")
@@ -2205,7 +2340,7 @@ with tab4:
         )
         st.caption("Keep this CSV as the verified source of truth. Re-upload it in the Data tab next time; you do not need to process the same PDFs again.")
         with st.expander("Preview master CSV", expanded=False):
-            st.dataframe(master_df, use_container_width=True, hide_index=True)
+            render_readable_table(master_df)
 
         st.divider()
         with st.expander("Optional AI Analyst", expanded=False):
