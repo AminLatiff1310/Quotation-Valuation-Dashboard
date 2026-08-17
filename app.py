@@ -263,16 +263,22 @@ textarea:disabled, input:disabled,
   color: #5F6872 !important;
   -webkit-text-fill-color: #5F6872 !important;
 }
+/* File uploader Browse files button */
 [data-testid="stFileUploaderDropzone"] button {
-  background: var(--bp-navy) !important;
-  color: #FFFFFF !important;
-  border: 1px solid var(--bp-navy) !important;
+  background: #10283F !important;
+  border: 1px solid #10283F !important;
   border-radius: 8px !important;
 }
 
-[data-testid="stFileUploaderDropzone"] button * {
+/* Force Browse files text to white */
+[data-testid="stFileUploaderDropzone"] button,
+[data-testid="stFileUploaderDropzone"] button *,
+[data-testid="stFileUploaderDropzone"] button p,
+[data-testid="stFileUploaderDropzone"] button span,
+[data-testid="stFileUploaderDropzone"] button div {
   color: #FFFFFF !important;
   -webkit-text-fill-color: #FFFFFF !important;
+  opacity: 1 !important;
 }
 
 /* KPI / metric cards mirror the blueprint paper tiles */
