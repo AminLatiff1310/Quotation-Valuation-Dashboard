@@ -2425,46 +2425,46 @@ with tab2:
 
         k1, k2, k3, k4 = st.columns(4)
 
-leader_name = str(winner[0].get("company", "Consultant"))
-leader_score = winner[1]
+        leader_name = str(winner[0].get("company", "Consultant"))
+        leader_score = winner[1]
 
-if len(leader_name) > 32:
-    leader_font = "0.95rem"
-elif len(leader_name) > 24:
-    leader_font = "1.05rem"
-elif len(leader_name) > 18:
-    leader_font = "1.18rem"
-else:
-    leader_font = "1.35rem"
+        if len(leader_name) > 32:
+            leader_font = "0.95rem"
+        elif len(leader_name) > 24:
+            leader_font = "1.05rem"
+        elif len(leader_name) > 18:
+            leader_font = "1.18rem"
+        else:
+            leader_font = "1.35rem"
 
-with k1:
-    st.markdown(
-        f"""
-        <div class="leader-card">
-            <div class="leader-label">Current leader</div>
-            <div class="leader-value" style="font-size:{leader_font};">
-                {html.escape(leader_name)}
-            </div>
-            <div class="leader-score">{leader_score}/100</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+        with k1:
+            st.markdown(
+                f"""
+                <div class="leader-card">
+                    <div class="leader-label">Current leader</div>
+                    <div class="leader-value" style="font-size:{leader_font};">
+                        {html.escape(leader_name)}
+                    </div>
+                    <div class="leader-score">{leader_score}/100</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
-k2.metric(
-    "Lowest quoted fee",
-    f"RM {lowest_fee:,.0f}" if lowest_fee else "Not stated",
-)
+        k2.metric(
+            "Lowest quoted fee",
+            f"RM {lowest_fee:,.0f}" if lowest_fee else "Not stated",
+        )
 
-k3.metric(
-    "Fastest completion",
-    fastest_label or "Not stated",
-)
+        k3.metric(
+            "Fastest completion",
+            fastest_label or "Not stated",
+        )
 
-k4.metric(
-    "Consultants reviewed",
-    len(subset),
-)
+        k4.metric(
+            "Consultants reviewed",
+            len(subset),
+        )
 
         st.markdown("### Detailed comparison")
         st.caption("Scroll horizontally if needed. The table uses a light background for easier office viewing.")
