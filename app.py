@@ -662,6 +662,13 @@ DEFAULT_WEIGHTS = {
         "Completion Time": 15,
         "Payment & Deliverables": 10,
     },
+    "Town Planning": {
+        "Professional Fee": 25,
+        "RFQ Scope Compliance": 40,
+        "Completion Time": 15,
+        "Payment Terms": 10,
+        "Deliverables / Commercial Terms": 10,
+    },
 }
 
 DEFAULT_SCOPE_ITEMS = {
@@ -688,7 +695,27 @@ DEFAULT_SCOPE_ITEMS = {
         "Financial / commercial viability",
         "Recommendations",
     ],
+    "Town Planning": [
+        "Review existing DO approved in 2016",
+        "Revised DO for Phase 2E",
+        "Revised DO for Phase 2F",
+        "New planning layout",
+        "18 or more shop / commercial units",
+        "Revision of existing lot sizes",
+        "Diverse mix of residential products",
+        "Consider existing subdivision / individual titles",
+        "Revised DO submission / approval process",
+        "Clear town planning deliverables",
+    ],
 }
+
+CATEGORY_OPTIONS = list(DEFAULT_SCOPE_ITEMS.keys())
+
+TOWN_PLANNING_RFQ_NOTE = (
+    "Evaluation basis: existing DO approved in 2016; revised Development Order for Phase 2E and Phase 2F; "
+    "new planning layout including 18 or more shop/commercial units; revision of existing lot sizes and layout "
+    "for a more diverse residential product mix; and consideration of the existing subdivision and individual titles."
+)
 
 if "records" not in st.session_state:
     st.session_state.records = []
@@ -1191,7 +1218,24 @@ def infer_scope_status(text, category):
         "Financial / commercial viability": ["financial analysis", "commercial viability", "viability"],
         "Recommendations": ["recommendation", "recommendations", "conclusion"],
     }
-    mapping = mapping_land if category == "Land Valuation" else mapping_market
+    mapping_town_planning = {
+        "Review existing DO approved in 2016": ["existing do", "approved in 2016", "2016"],
+        "Revised DO for Phase 2E": ["revised do", "phase 2e", "2e"],
+        "Revised DO for Phase 2F": ["revised do", "phase 2f", "2f"],
+        "New planning layout": ["new planning layout", "revised layout", "layout plan", "planning layout"],
+        "18 or more shop / commercial units": ["18 units", "shop", "commercial"],
+        "Revision of existing lot sizes": ["lot size", "lot sizes", "revision of lot", "revise lot"],
+        "Diverse mix of residential products": ["diverse mix", "residential products", "product mix", "housing mix"],
+        "Consider existing subdivision / individual titles": ["individual titles", "subdivided", "subdivision", "issued titles"],
+        "Revised DO submission / approval process": ["submit revised do", "development order submission", "submission", "approval"],
+        "Clear town planning deliverables": ["layout plan", "planning report", "submission drawings", "deliverables", "report"],
+    }
+    if category == "Land Valuation":
+        mapping = mapping_land
+    elif category == "Market Study":
+        mapping = mapping_market
+    else:
+        mapping = mapping_town_planning
     out = {}
     for item, kws in mapping.items():
         hits = sum(1 for kw in kws if kw in t)
@@ -1254,7 +1298,7 @@ def compute_scores(records, category, weights):
                 "Payment Terms": pay,
                 "Deliverables / Commercial Terms": deli,
             }
-        else:
+        elif category == "Market Study":
             hbu = {"Yes":100,"Partial":60,"No":0}.get(r["scope_status"].get("Highest & Best Use","No"),0)
             comp = {
                 "Professional Fee": fee_scores[i],
@@ -1262,6 +1306,14 @@ def compute_scores(records, category, weights):
                 "HBU / Strategic Usefulness": 0.6*hbu + 0.4*scope,
                 "Completion Time": time_scores[i],
                 "Payment & Deliverables": 0.5*pay + 0.5*deli,
+            }
+        else:
+            comp = {
+                "Professional Fee": fee_scores[i],
+                "RFQ Scope Compliance": scope,
+                "Completion Time": time_scores[i],
+                "Payment Terms": pay,
+                "Deliverables / Commercial Terms": deli,
             }
         total = sum(comp[k]*weights[k]/100 for k in weights)
         result.append((r, round(total,1), comp))
@@ -1445,6 +1497,9 @@ section numbers, estimated property values, or payment instalments.
 For scope, summarize the consultant's committed work accurately and concisely.
 For Highest & Best Use and financial/commercial viability, classify Yes only if explicitly included,
 Partial if related analysis is present but not clearly committed, and No if absent.
+For Town Planning assignments, focus scope extraction on the consultant's commitment to the revised Development Order,
+Phase 2E and 2F, planning-layout revisions, shop/commercial component, residential lot-size/product-mix revisions,
+and any implications of existing subdivision and individual titles. Do not assume authority submissions or deliverables unless stated.
 Preserve important exclusions, additional charges, validity periods, and conditions."""
 
 def trim_text_for_ai(text, max_chars=50000):
@@ -1633,7 +1688,12 @@ def record_from_csv_row(row, row_number=1):
     if category not in DEFAULT_SCOPE_ITEMS:
         # Be forgiving with common shorthand.
         low = category.lower()
-        category = "Market Study" if "market" in low or "pricing" in low else "Land Valuation"
+        if "town" in low or "planning" in low or "planner" in low:
+            category = "Town Planning"
+        elif "market" in low or "pricing" in low:
+            category = "Market Study"
+        else:
+            category = "Land Valuation"
 
     consultant = clean_cell(row.get("Consultant")) or f"Consultant {row_number}"
     scope_summary = clean_cell(row.get("Scope Summary"))
@@ -2091,7 +2151,7 @@ with tab1:
 
         st.markdown("**Commercial details**")
         mc1, mc2, mc3 = st.columns([1, 1.2, 1])
-        manual_category = mc1.selectbox("Category", ["Land Valuation", "Market Study"], key="manual_category")
+        manual_category = mc1.selectbox("Category", CATEGORY_OPTIONS, key="manual_category")
         manual_company = mc2.text_input("Consultant", key="manual_company")
         manual_fee = mc3.number_input("Professional fee (RM)", min_value=0.0, value=0.0, step=500.0, key="manual_fee")
         mm1, mm2 = st.columns(2)
@@ -2203,7 +2263,7 @@ with tab1:
             unsafe_allow_html=True,
         )
         c1, c2 = st.columns([1, 2])
-        category = c1.selectbox("Quotation type", ["Land Valuation", "Market Study"], key="pdf_category")
+        category = c1.selectbox("Quotation type", CATEGORY_OPTIONS, key="pdf_category")
         uploads = c2.file_uploader("Upload consultant quotation PDF(s)", type=["pdf"], accept_multiple_files=True, key="pdf_uploads")
         if uploads and st.button("Extract PDF quotation(s)", type="primary", key="extract_pdfs"):
             incoming = []
@@ -2258,8 +2318,14 @@ with tab1:
 
 with tab2:
     st.subheader("Quotation comparison")
-    cat = st.radio("View comparison", ["Land Valuation", "Market Study"], horizontal=True, key="comparison_category")
+    cat = st.radio("View comparison", CATEGORY_OPTIONS, horizontal=True, key="comparison_category")
     subset = [r for r in st.session_state.records if r["category"] == cat]
+
+    if cat == "Town Planning":
+        st.markdown(
+            f'<div class="pro-note"><b>Town Planning RFQ basis:</b> {html.escape(TOWN_PLANNING_RFQ_NOTE)}</div>',
+            unsafe_allow_html=True,
+        )
 
     if not subset:
         st.info(f"No {cat} quotations loaded. Add or load quotation records in the Data tab first.")
@@ -2333,8 +2399,13 @@ with tab2:
         st.caption("Decision-support only. Check the verified CSV against the signed/final quotation before appointment.")
 
 with tab3:
-    cat = st.radio("Scope matrix", ["Land Valuation", "Market Study"], horizontal=True, key="scope_matrix_category")
+    cat = st.radio("Scope matrix", CATEGORY_OPTIONS, horizontal=True, key="scope_matrix_category")
     subset = [r for r in st.session_state.records if r["category"] == cat]
+    if cat == "Town Planning":
+        st.markdown(
+            f'<div class="pro-note"><b>Town Planning scope checklist:</b> {html.escape(TOWN_PLANNING_RFQ_NOTE)}</div>',
+            unsafe_allow_html=True,
+        )
     if not subset:
         st.info(f"No {cat} quotations loaded.")
     else:
@@ -2352,7 +2423,7 @@ with tab4:
         st.info("No quotations loaded. Add or load quotation records in the Data tab first.")
     else:
         lines = []
-        for report_cat in ["Land Valuation", "Market Study"]:
+        for report_cat in CATEGORY_OPTIONS:
             report_subset = [r for r in st.session_state.records if r["category"] == report_cat]
             if report_subset:
                 report_scores = compute_scores(st.session_state.records, report_cat, DEFAULT_WEIGHTS[report_cat])
@@ -2418,6 +2489,7 @@ with tab4:
                 examples = [
                     "Which consultant offers the best overall value and why?",
                     "Compare only the Market Study scope.",
+                    "Compare the Town Planning quotations against the revised DO RFQ scope.",
                     "What clarification questions should I send before appointment?",
                     "Draft a concise Management recommendation.",
                 ]
