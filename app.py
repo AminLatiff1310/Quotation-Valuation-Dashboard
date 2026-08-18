@@ -1921,7 +1921,7 @@ st.markdown(
 )
 
 with st.sidebar:
-    st.image("CG.png", width=170)
+    st.image("CGPD.png", width=170)
     st.header("Project / RFQ")
     st.caption("Keep the everyday workflow simple. Advanced AI and project tools are available below when needed.")
     st.text_area(
