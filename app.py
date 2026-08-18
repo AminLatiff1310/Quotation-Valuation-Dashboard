@@ -28,7 +28,7 @@ except ImportError:
 
 st.set_page_config(
     page_title="Consultant Quotation Evaluation",
-    page_icon="📑",
+    page_icon="Icon.png",
     layout="wide",
     initial_sidebar_state="expanded",
 )
