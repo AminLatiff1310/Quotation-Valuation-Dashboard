@@ -152,25 +152,26 @@ label, [data-testid="stWidgetLabel"] p {
   border-color: var(--bp-line);
 }
 
-/* Sidebar company logo */
-[data-testid="stSidebar"] [data-testid="stImage"] {
-    background: #FFFDF8 !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    padding: 18px 12px !important;
-    border-radius: 12px !important;
-    margin-bottom: 24px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+/* Sidebar company logo card */
+.sidebar-logo-card {
+    width: 100%;
+    box-sizing: border-box;
+    background: #FFFDF8;
+    border-radius: 12px;
+    padding: 20px 16px;
+    margin: 4px 0 28px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-[data-testid="stSidebar"] [data-testid="stImage"] img {
-    display: block !important;
-    margin: 0 auto !important;
-    width: 150px !important;
-    max-width: 70% !important;
-    object-fit: contain !important;
+.sidebar-logo-img {
+    display: block;
+    width: 150px;
+    max-width: 75%;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto;
 }
 
 /* Left rail / sidebar */
@@ -1925,7 +1926,20 @@ st.markdown(
 )
 
 with st.sidebar:
-    st.image("CGPD.png", width=170)
+    logo_path = Path(__file__).with_name("CGPD.png")
+
+    if logo_path.exists():
+        logo_b64 = base64.b64encode(logo_path.read_bytes()).decode("utf-8")
+
+        st.markdown(
+            f"""
+            <div class="sidebar-logo-card">
+                <img src="data:image/png;base64,{logo_b64}" class="sidebar-logo-img">
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        
     st.header("Project / RFQ")
     st.caption("Keep the everyday workflow simple. Advanced AI and project tools are available below when needed.")
     st.text_area(
