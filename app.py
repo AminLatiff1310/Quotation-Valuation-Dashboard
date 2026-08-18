@@ -155,7 +155,9 @@ label, [data-testid="stWidgetLabel"] p {
 /* Sidebar company logo */
 [data-testid="stSidebar"] [data-testid="stImage"] {
     background: #FFFDF8 !important;
-    padding: 14px 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 18px 12px !important;
     border-radius: 12px !important;
     margin-bottom: 24px !important;
     display: flex !important;
@@ -166,7 +168,9 @@ label, [data-testid="stWidgetLabel"] p {
 [data-testid="stSidebar"] [data-testid="stImage"] img {
     display: block !important;
     margin: 0 auto !important;
-    max-width: 170px !important;
+    width: 150px !important;
+    max-width: 70% !important;
+    object-fit: contain !important;
 }
 
 /* Left rail / sidebar */
