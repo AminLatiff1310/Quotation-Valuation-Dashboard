@@ -334,6 +334,53 @@ div[data-testid="stHorizontalBlock"] > div:nth-child(4n+4) [data-testid="stMetri
 }
 [data-testid="stMetricDelta"] * { color: var(--bp-muted) !important; }
 
+/* Custom Current Leader card */
+.leader-card {
+    position: relative;
+    background: var(--bp-white);
+    border: 1px solid var(--bp-line);
+    border-radius: 12px;
+    min-height: 124px;
+    padding: 16px 18px 16px 21px;
+    box-sizing: border-box;
+    box-shadow: 0 7px 22px rgba(16,32,51,.045);
+    overflow: hidden;
+}
+
+.leader-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: var(--bp-blue);
+}
+
+.leader-label {
+    color: #4f5b66;
+    font-size: .82rem;
+    font-weight: 750;
+    margin-bottom: 7px;
+}
+
+.leader-value {
+    color: var(--bp-ink);
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-weight: 700;
+    line-height: 1.15;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+
+.leader-score {
+    color: var(--bp-muted);
+    font-size: .78rem;
+    font-weight: 700;
+    margin-top: 7px;
+}
+
 /* Tabs */
 [data-baseweb="tab-list"] {
   gap: 5px;
@@ -2377,10 +2424,47 @@ with tab2:
         )
 
         k1, k2, k3, k4 = st.columns(4)
-        k1.metric("Current leader", f'{winner[0]["company"]} · {winner[1]}/100')
-        k2.metric("Lowest quoted fee", f"RM {lowest_fee:,.0f}" if lowest_fee else "Not stated")
-        k3.metric("Fastest completion", fastest_label or "Not stated")
-        k4.metric("Consultants reviewed", len(subset))
+
+leader_name = str(winner[0].get("company", "Consultant"))
+leader_score = winner[1]
+
+if len(leader_name) > 32:
+    leader_font = "0.95rem"
+elif len(leader_name) > 24:
+    leader_font = "1.05rem"
+elif len(leader_name) > 18:
+    leader_font = "1.18rem"
+else:
+    leader_font = "1.35rem"
+
+with k1:
+    st.markdown(
+        f"""
+        <div class="leader-card">
+            <div class="leader-label">Current leader</div>
+            <div class="leader-value" style="font-size:{leader_font};">
+                {html.escape(leader_name)}
+            </div>
+            <div class="leader-score">{leader_score}/100</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+k2.metric(
+    "Lowest quoted fee",
+    f"RM {lowest_fee:,.0f}" if lowest_fee else "Not stated",
+)
+
+k3.metric(
+    "Fastest completion",
+    fastest_label or "Not stated",
+)
+
+k4.metric(
+    "Consultants reviewed",
+    len(subset),
+)
 
         st.markdown("### Detailed comparison")
         st.caption("Scroll horizontally if needed. The table uses a light background for easier office viewing.")
