@@ -236,8 +236,20 @@ label, [data-testid="stWidgetLabel"] p {
   color: var(--bp-ink) !important;
 }
 [data-baseweb="popover"] [role="option"]:hover,
-[data-baseweb="menu"] [role="option"]:hover { background: #eef0ea !important; }
-
+[data-baseweb="menu"] [role="option"]:hover,
+[data-baseweb="popover"] [role="option"][aria-selected="true"],
+[data-baseweb="menu"] [role="option"][aria-selected="true"] {
+  background: #E8E4DC !important;
+  color: #102033 !important;
+}
+[data-baseweb="popover"] [role="option"]:focus,
+[data-baseweb="menu"] [role="option"]:focus,
+[data-baseweb="popover"] [role="option"]:focus-visible,
+[data-baseweb="menu"] [role="option"]:focus-visible {
+  background: #E8E4DC !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
 /* Sidebar controls remain navy-friendly */
 [data-testid="stSidebar"] .stTextInput input,
 [data-testid="stSidebar"] .stNumberInput input,
