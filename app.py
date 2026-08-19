@@ -705,6 +705,71 @@ a { color: var(--bp-blue) !important; }
   .bp-score-row { grid-template-columns: 1fr; gap: 5px; }
   .bp-score-value { text-align: left; }
 }
+
+/* FINAL FIX - remove orange hover/selection rectangle from selectbox */
+[data-testid="stSelectbox"] [data-baseweb="select"],
+[data-testid="stSelectbox"] [data-baseweb="select"] *,
+[role="listbox"],
+[role="listbox"] * {
+  outline-color: transparent !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Closed selectbox */
+[data-testid="stSelectbox"] [data-baseweb="select"] > div,
+[data-testid="stSelectbox"] [data-baseweb="select"] > div:hover,
+[data-testid="stSelectbox"] [data-baseweb="select"] > div:focus,
+[data-testid="stSelectbox"] [data-baseweb="select"] > div:focus-within {
+  border-color: rgba(16,32,51,.14) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Dropdown options */
+[role="listbox"] [role="option"],
+[role="listbox"] [role="option"]:hover,
+[role="listbox"] [role="option"]:focus,
+[role="listbox"] [role="option"]:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Normal hover */
+[role="listbox"] [role="option"]:hover {
+  background: #E8E4DC !important;
+}
+
+/* Kill BaseWeb coloured indicator / pseudo element */
+[role="listbox"] [role="option"]::before,
+[role="listbox"] [role="option"]::after,
+[role="listbox"] [role="option"] *::before,
+[role="listbox"] [role="option"] *::after {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Remove coloured highlight from inner option elements */
+[role="listbox"] [role="option"] *,
+[role="listbox"] [role="option"]:hover *,
+[role="listbox"] [role="option"]:focus * {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Hide text caret if BaseWeb internally creates an input */
+[data-testid="stSelectbox"] input {
+  caret-color: transparent !important;
+}
+
+/* Remove any focus ring on internal selectbox elements */
+[data-testid="stSelectbox"] *:focus,
+[data-testid="stSelectbox"] *:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
 </style>
 """
 st.markdown(PRO_CSS, unsafe_allow_html=True)
