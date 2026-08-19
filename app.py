@@ -27,8 +27,8 @@ except ImportError:
     OpenAI = None
 
 st.set_page_config(
-    page_title="Consultant Quotation Database",
-    page_icon="📑",
+    page_title="Consultant Quotation Evaluation",
+    page_icon="Icon.png",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -87,15 +87,28 @@ html, body, [class*="css"], .stApp {
 
 /* Editorial typography */
 h1, h2, h3, h4 { color: var(--bp-ink) !important; }
-h1 { font-family: Georgia, 'Times New Roman', serif !important; letter-spacing: -.035em; }
-h2, h3 { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important; letter-spacing: -.02em; }
-.stMarkdown p, .stMarkdown li, [data-testid="stCaptionContainer"], .stCaption {
-  color: var(--bp-muted) !important;
-  line-height: 1.58 !important;
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+  letter-spacing: -.02em;
+  color: var(--bp-ink) !important;
+}
+h1 { font-weight: 800 !important; }
+h2 { font-size: 1.55rem !important; font-weight: 800 !important; }
+h3 { font-size: 1.18rem !important; font-weight: 750 !important; }
+.stMarkdown p, .stMarkdown li {
+  color: var(--bp-ink) !important;
+  line-height: 1.62 !important;
+  font-size: .94rem !important;
+}
+[data-testid="stCaptionContainer"], .stCaption {
+  color: #4f5b66 !important;
+  line-height: 1.5 !important;
+  font-size: .80rem !important;
 }
 label, [data-testid="stWidgetLabel"] p {
   color: var(--bp-ink) !important;
   font-weight: 700 !important;
+  font-size: .88rem !important;
 }
 
 /* Editorial masthead */
@@ -108,14 +121,14 @@ label, [data-testid="stWidgetLabel"] p {
 .pro-header * { color: var(--bp-ink) !important; }
 .pro-header h1 {
   margin: 0 0 9px 0;
-  font-size: clamp(2.05rem, 3.4vw, 3.25rem);
-  font-weight: 700;
-  line-height: .96;
+  font-size: clamp(2rem, 3vw, 2.65rem);
+  font-weight: 800;
+  line-height: 1.05;
 }
 .pro-header p {
   margin: 0;
   color: var(--bp-muted) !important;
-  font-size: .93rem;
+  font-size: .90rem;
   max-width: 78ch;
 }
 .pro-chip {
@@ -127,7 +140,7 @@ label, [data-testid="stWidgetLabel"] p {
   border-radius: 7px;
   background: var(--bp-white);
   color: var(--bp-ink) !important;
-  font-size: .69rem;
+  font-size: .72rem;
   font-weight: 800;
   letter-spacing: .055em;
   text-transform: uppercase;
@@ -137,6 +150,28 @@ label, [data-testid="stWidgetLabel"] p {
   background: var(--bp-paper-2);
   color: var(--bp-coral) !important;
   border-color: var(--bp-line);
+}
+
+/* Sidebar company logo card */
+.sidebar-logo-card {
+    width: 100%;
+    box-sizing: border-box;
+    background: #FFFDF8;
+    border-radius: 12px;
+    padding: 20px 16px;
+    margin: 4px 0 28px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar-logo-img {
+    display: block;
+    width: 150px;
+    max-width: 75%;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto;
 }
 
 /* Left rail / sidebar */
@@ -153,9 +188,14 @@ label, [data-testid="stWidgetLabel"] p {
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] span,
 [data-testid="stSidebar"] label,
-[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p { color: #d3e0e8 !important; }
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+  color: #f2f6f8 !important;
+  font-size: .86rem !important;
+}
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p { font-weight: 700 !important; }
 [data-testid="stSidebar"] .stCaption,
-[data-testid="stSidebar"] small { color: #a8bdca !important; }
+[data-testid="stSidebar"] small { color: #c4d2db !important; font-size: .77rem !important; }
 [data-testid="stSidebar"] hr { border-color: rgba(255,255,255,.12) !important; }
 [data-testid="stSidebar"] .pro-section { color: #efb49e !important; }
 
@@ -245,13 +285,23 @@ textarea:disabled, input:disabled,
   color: #5F6872 !important;
   -webkit-text-fill-color: #5F6872 !important;
 }
+/* File uploader Browse files button */
 [data-testid="stFileUploaderDropzone"] button {
-  background: var(--bp-navy) !important;
-  color: #fff !important;
-  border: 1px solid var(--bp-navy) !important;
+  background: #10283F !important;
+  border: 1px solid #10283F !important;
   border-radius: 8px !important;
 }
-[data-testid="stFileUploaderDropzone"] button * { color: #fff !important; }
+
+/* Force Browse files text to white */
+[data-testid="stFileUploaderDropzone"] button,
+[data-testid="stFileUploaderDropzone"] button *,
+[data-testid="stFileUploaderDropzone"] button p,
+[data-testid="stFileUploaderDropzone"] button span,
+[data-testid="stFileUploaderDropzone"] button div {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  opacity: 1 !important;
+}
 
 /* KPI / metric cards mirror the blueprint paper tiles */
 [data-testid="stMetric"] {
@@ -274,15 +324,62 @@ textarea:disabled, input:disabled,
 div[data-testid="stHorizontalBlock"] > div:nth-child(4n+2) [data-testid="stMetric"]::before { background: var(--bp-coral); }
 div[data-testid="stHorizontalBlock"] > div:nth-child(4n+3) [data-testid="stMetric"]::before { background: var(--bp-gold); }
 div[data-testid="stHorizontalBlock"] > div:nth-child(4n+4) [data-testid="stMetric"]::before { background: var(--bp-sage); }
-[data-testid="stMetricLabel"] * { color: #777b80 !important; font-weight: 750 !important; }
+[data-testid="stMetricLabel"] * { color: #4f5b66 !important; font-weight: 750 !important; font-size: .82rem !important; }
 [data-testid="stMetricValue"] * {
   color: var(--bp-ink) !important;
-  font-family: Georgia, 'Times New Roman', serif !important;
-  font-size: 2rem !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+  font-size: 1.72rem !important;
   font-weight: 700 !important;
   letter-spacing: -.045em !important;
 }
 [data-testid="stMetricDelta"] * { color: var(--bp-muted) !important; }
+
+/* Custom Current Leader card */
+.leader-card {
+    position: relative;
+    background: var(--bp-white);
+    border: 1px solid var(--bp-line);
+    border-radius: 12px;
+    min-height: 124px;
+    padding: 16px 18px 16px 21px;
+    box-sizing: border-box;
+    box-shadow: 0 7px 22px rgba(16,32,51,.045);
+    overflow: hidden;
+}
+
+.leader-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background: var(--bp-blue);
+}
+
+.leader-label {
+    color: #4f5b66;
+    font-size: .82rem;
+    font-weight: 750;
+    margin-bottom: 7px;
+}
+
+.leader-value {
+    color: var(--bp-ink);
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-weight: 700;
+    line-height: 1.15;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+
+.leader-score {
+    color: var(--bp-muted);
+    font-size: .78rem;
+    font-weight: 700;
+    margin-top: 7px;
+}
 
 /* Tabs */
 [data-baseweb="tab-list"] {
@@ -293,11 +390,18 @@ div[data-testid="stHorizontalBlock"] > div:nth-child(4n+4) [data-testid="stMetri
   border: 1px solid var(--bp-line);
 }
 [data-baseweb="tab"] {
-  border-radius: 7px;
-  color: #6f7478 !important;
-  min-height: 44px;
+  border-radius: 8px;
+  color: #384653 !important;
+  min-height: 54px !important;
+  padding: 0 22px !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
 }
-[data-baseweb="tab"] * { color: #6f7478 !important; }
+[data-baseweb="tab"] * {
+  color: #384653 !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+}
 [data-baseweb="tab"][aria-selected="true"] {
   background: var(--bp-navy) !important;
   color: #fff !important;
@@ -314,6 +418,39 @@ div[data-testid="stHorizontalBlock"] > div:nth-child(4n+4) [data-testid="stMetri
 }
 [data-testid="stExpander"] summary,
 [data-testid="stExpander"] summary * { color: var(--bp-ink) !important; font-weight: 750 !important; }
+
+/* Sidebar expander headers - clean and readable */
+[data-testid="stSidebar"] [data-testid="stExpander"] {
+  background: rgba(255,255,255,.06) !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  border-radius: 10px !important;
+}
+
+[data-testid="stSidebar"] [data-testid="stExpander"] summary {
+  padding: 12px 14px !important;
+}
+
+/* Only style the visible expander title */
+[data-testid="stSidebar"] [data-testid="stExpander"] summary p {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+  margin: 0 !important;
+}
+
+/* Keep Streamlit arrow as an icon, not visible text */
+[data-testid="stSidebar"] [data-testid="stExpander"] summary svg {
+  color: #FFFFFF !important;
+  fill: #FFFFFF !important;
+}
+
+/* Hide any internal material-icon text if Streamlit renders it as text */
+[data-testid="stSidebar"] [data-testid="stExpander"] summary [data-testid="stIconMaterial"] {
+  font-size: 0 !important;
+}
 
 /* Dataframe / data editor: light paper with navy header treatment */
 [data-testid="stDataFrame"] {
@@ -403,6 +540,7 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--bp-coral) !imp
   border-left: 4px solid var(--bp-coral);
   border-radius: 9px;
   padding: 12px 14px;
+  margin-bottom: 18px;
   color: var(--bp-ink) !important;
   font-size: .86rem;
 }
@@ -420,8 +558,86 @@ a { color: var(--bp-blue) !important; }
 ::-webkit-scrollbar-thumb { background: #8996a0; border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: #6f7d88; }
 
-/* Streamlit status / toolbar surfaces */
-[data-testid="stStatusWidget"], [data-testid="stToolbar"] { color: var(--bp-ink) !important; }
+/* Streamlit top header / toolbar: strong contrast */
+[data-testid="stHeader"] {
+  background: #0d2033 !important;
+  border-bottom: 1px solid rgba(255,255,255,.10) !important;
+}
+[data-testid="stHeader"] *,
+[data-testid="stToolbar"] *,
+[data-testid="stStatusWidget"] * {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+[data-testid="stHeader"] button,
+[data-testid="stToolbar"] button {
+  color: #ffffff !important;
+}
+[data-testid="stHeader"] svg,
+[data-testid="stToolbar"] svg {
+  fill: #ffffff !important;
+  color: #ffffff !important;
+}
+[data-testid="stAppDeployButton"] {
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,.28) !important;
+}
+[data-testid="stStatusWidget"] { color: #ffffff !important; }
+
+
+/* Readable business tables - consistent with the light Executive Blueprint theme */
+.bp-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--bp-line);
+  border-radius: 10px;
+  background: var(--bp-white);
+  box-shadow: 0 7px 22px rgba(16,32,51,.04);
+  margin: .45rem 0 1rem;
+}
+.bp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
+  font-size: .84rem;
+  color: var(--bp-ink);
+  min-width: 760px;
+}
+.bp-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bp-navy);
+  color: #ffffff !important;
+  font-weight: 750;
+  text-align: left;
+  padding: 11px 12px;
+  border-right: 1px solid rgba(255,255,255,.10);
+  white-space: nowrap;
+}
+.bp-table tbody td {
+  background: var(--bp-white);
+  color: var(--bp-ink) !important;
+  padding: 10px 12px;
+  border-top: 1px solid var(--bp-soft-line);
+  vertical-align: top;
+  line-height: 1.45;
+}
+.bp-table tbody tr:nth-child(even) td { background: #f8f4ed; }
+.bp-table tbody tr:hover td { background: #edf2f4; }
+.bp-score-bars { margin: .4rem 0 1rem; }
+.bp-score-row {
+  display: grid;
+  grid-template-columns: minmax(210px, 1.4fr) 3fr 72px;
+  gap: 12px;
+  align-items: center;
+  margin: 10px 0;
+  font-size: .87rem;
+}
+.bp-score-name { color: var(--bp-ink); font-weight: 700; }
+.bp-score-track { height: 13px; background: #e1ddd5; border-radius: 999px; overflow: hidden; }
+.bp-score-fill { height: 100%; background: var(--bp-blue); border-radius: 999px; }
+.bp-score-value { color: var(--bp-ink); font-weight: 800; text-align: right; }
 
 @media (max-width: 900px) {
   [data-testid="stAppViewContainer"] > .main { margin: 0; border-radius: 0; }
@@ -435,6 +651,8 @@ a { color: var(--bp-blue) !important; }
   [data-baseweb="tab"] {
     flex: 0 0 auto !important;
     white-space: nowrap !important;
+    min-height: 50px !important;
+    padding: 0 18px !important;
   }
   [data-testid="stMetric"] { min-height: 108px; }
 }
@@ -443,11 +661,43 @@ a { color: var(--bp-blue) !important; }
   .block-container { padding-left: .75rem; padding-right: .75rem; }
   .pro-header { padding-bottom: 16px; margin-bottom: 16px; }
   .pro-header h1 { font-size: 1.7rem; line-height: 1.03; }
-  .pro-chip { font-size: .62rem; padding: 5px 8px; }
+  .pro-chip { font-size: .68rem; padding: 5px 8px; }
+  [data-baseweb="tab"] *, [data-baseweb="tab"] { font-size: .92rem !important; }
+  .bp-score-row { grid-template-columns: 1fr; gap: 5px; }
+  .bp-score-value { text-align: left; }
 }
 </style>
 """
 st.markdown(PRO_CSS, unsafe_allow_html=True)
+
+
+
+def render_readable_table(df):
+    """Render a light, readable HTML table instead of Streamlit's canvas dataframe."""
+    if df is None or df.empty:
+        st.info("No data available.")
+        return
+    display_df = df.copy()
+    for col in display_df.columns:
+        display_df[col] = display_df[col].map(lambda v: "" if pd.isna(v) else v)
+    table_html = display_df.to_html(index=False, escape=True, classes="bp-table", border=0)
+    st.markdown(f'<div class="bp-table-wrap">{table_html}</div>', unsafe_allow_html=True)
+
+
+def render_score_bars(scores):
+    """Dependency-free score visualisation to avoid Altair/Streamlit chart errors."""
+    rows = []
+    for record, total, _ in scores:
+        name = html.escape(str(record.get("company", "Consultant")))
+        score = max(0.0, min(100.0, float(total or 0)))
+        rows.append(
+            f'<div class="bp-score-row">'
+            f'<div class="bp-score-name">{name}</div>'
+            f'<div class="bp-score-track"><div class="bp-score-fill" style="width:{score:.1f}%"></div></div>'
+            f'<div class="bp-score-value">{score:.1f}/100</div>'
+            f'</div>'
+        )
+    st.markdown('<div class="bp-score-bars">' + ''.join(rows) + '</div>', unsafe_allow_html=True)
 
 DEFAULT_WEIGHTS = {
     "Land Valuation": {
@@ -464,7 +714,33 @@ DEFAULT_WEIGHTS = {
         "Completion Time": 15,
         "Payment & Deliverables": 10,
     },
+    "Town Planning": {
+        "Professional Fee": 25,
+        "RFQ Scope Compliance": 40,
+        "Completion Time": 15,
+        "Payment Terms": 10,
+        "Deliverables / Commercial Terms": 10,
+    },
 }
+
+GENERAL_WEIGHTS = {
+    "Professional Fee": 30,
+    "Scope Compliance": 30,
+    "Completion Time": 15,
+    "Payment Terms": 10,
+    "Deliverables": 10,
+    "Commercial Terms / Qualifications": 5,
+}
+
+GENERAL_SCOPE_ITEMS = [
+    "Core scope / services required",
+    "Methodology / approach",
+    "Required deliverables",
+    "Authority / statutory requirements (if applicable)",
+    "Coordination / meetings / stakeholder engagement",
+    "Programme / completion commitment",
+    "Commercial terms / exclusions clearly stated",
+]
 
 DEFAULT_SCOPE_ITEMS = {
     "Land Valuation": [
@@ -490,7 +766,48 @@ DEFAULT_SCOPE_ITEMS = {
         "Financial / commercial viability",
         "Recommendations",
     ],
+    "Town Planning": [
+        "Review existing DO approved in 2016",
+        "Revised DO for Phase 2E",
+        "Revised DO for Phase 2F",
+        "New planning layout",
+        "18 or more shop / commercial units",
+        "Revision of existing lot sizes",
+        "Diverse mix of residential products",
+        "Consider existing subdivision / individual titles",
+        "Revised DO submission / approval process",
+        "Clear town planning deliverables",
+    ],
 }
+
+CATEGORY_OPTIONS = list(DEFAULT_SCOPE_ITEMS.keys())
+
+def get_category_weights(category):
+    return DEFAULT_WEIGHTS.get(category, GENERAL_WEIGHTS)
+
+def get_scope_items(category, record=None):
+    if category in DEFAULT_SCOPE_ITEMS:
+        return DEFAULT_SCOPE_ITEMS[category]
+    if record and isinstance(record.get("scope_status"), dict) and record.get("scope_status"):
+        return list(record["scope_status"].keys())
+    return GENERAL_SCOPE_ITEMS
+
+def available_categories(records):
+    categories = []
+    for r in records:
+        c = str(r.get("category", "")).strip()
+        if c and c not in categories:
+            categories.append(c)
+    for c in CATEGORY_OPTIONS:
+        if c not in categories:
+            categories.append(c)
+    return categories
+
+TOWN_PLANNING_RFQ_NOTE = (
+    "Evaluation basis: existing DO approved in 2016; revised Development Order for Phase 2E and Phase 2F; "
+    "new planning layout including 18 or more shop/commercial units; revision of existing lot sizes and layout "
+    "for a more diverse residential product mix; and consideration of the existing subdivision and individual titles."
+)
 
 if "records" not in st.session_state:
     st.session_state.records = []
@@ -993,7 +1310,34 @@ def infer_scope_status(text, category):
         "Financial / commercial viability": ["financial analysis", "commercial viability", "viability"],
         "Recommendations": ["recommendation", "recommendations", "conclusion"],
     }
-    mapping = mapping_land if category == "Land Valuation" else mapping_market
+    mapping_town_planning = {
+        "Review existing DO approved in 2016": ["existing do", "approved in 2016", "2016"],
+        "Revised DO for Phase 2E": ["revised do", "phase 2e", "2e"],
+        "Revised DO for Phase 2F": ["revised do", "phase 2f", "2f"],
+        "New planning layout": ["new planning layout", "revised layout", "layout plan", "planning layout"],
+        "18 or more shop / commercial units": ["18 units", "shop", "commercial"],
+        "Revision of existing lot sizes": ["lot size", "lot sizes", "revision of lot", "revise lot"],
+        "Diverse mix of residential products": ["diverse mix", "residential products", "product mix", "housing mix"],
+        "Consider existing subdivision / individual titles": ["individual titles", "subdivided", "subdivision", "issued titles"],
+        "Revised DO submission / approval process": ["submit revised do", "development order submission", "submission", "approval"],
+        "Clear town planning deliverables": ["layout plan", "planning report", "submission drawings", "deliverables", "report"],
+    }
+    if category == "Land Valuation":
+        mapping = mapping_land
+    elif category == "Market Study":
+        mapping = mapping_market
+    elif category == "Town Planning":
+        mapping = mapping_town_planning
+    else:
+        mapping = {
+            "Core scope / services required": ["scope", "services", "works", "assignment"],
+            "Methodology / approach": ["methodology", "approach", "method", "strategy"],
+            "Required deliverables": ["deliverable", "report", "drawing", "submission"],
+            "Authority / statutory requirements (if applicable)": ["authority", "approval", "statutory", "submission"],
+            "Coordination / meetings / stakeholder engagement": ["coordination", "meeting", "liaison", "engagement"],
+            "Programme / completion commitment": ["week", "day", "completion", "programme", "timeline"],
+            "Commercial terms / exclusions clearly stated": ["payment", "validity", "exclusion", "limitation", "terms"],
+        }
     out = {}
     for item, kws in mapping.items():
         hits = sum(1 for kw in kws if kw in t)
@@ -1056,7 +1400,7 @@ def compute_scores(records, category, weights):
                 "Payment Terms": pay,
                 "Deliverables / Commercial Terms": deli,
             }
-        else:
+        elif category == "Market Study":
             hbu = {"Yes":100,"Partial":60,"No":0}.get(r["scope_status"].get("Highest & Best Use","No"),0)
             comp = {
                 "Professional Fee": fee_scores[i],
@@ -1065,7 +1409,25 @@ def compute_scores(records, category, weights):
                 "Completion Time": time_scores[i],
                 "Payment & Deliverables": 0.5*pay + 0.5*deli,
             }
-        total = sum(comp[k]*weights[k]/100 for k in weights)
+        elif category == "Town Planning":
+            comp = {
+                "Professional Fee": fee_scores[i],
+                "RFQ Scope Compliance": scope,
+                "Completion Time": time_scores[i],
+                "Payment Terms": pay,
+                "Deliverables / Commercial Terms": deli,
+            }
+        else:
+            commercial = deliverable_numeric((r.get("notes", "") or "") + " " + (r.get("disbursement", "") or "") + " " + (r.get("sst", "") or ""))
+            comp = {
+                "Professional Fee": fee_scores[i],
+                "Scope Compliance": scope,
+                "Completion Time": time_scores[i],
+                "Payment Terms": pay,
+                "Deliverables": deli,
+                "Commercial Terms / Qualifications": commercial,
+            }
+        total = sum(comp.get(k, 0)*weights[k]/100 for k in weights)
         result.append((r, round(total,1), comp))
     return sorted(result, key=lambda x: x[1], reverse=True)
 
@@ -1247,6 +1609,10 @@ section numbers, estimated property values, or payment instalments.
 For scope, summarize the consultant's committed work accurately and concisely.
 For Highest & Best Use and financial/commercial viability, classify Yes only if explicitly included,
 Partial if related analysis is present but not clearly committed, and No if absent.
+For Town Planning assignments, focus scope extraction on the consultant's commitment to the revised Development Order,
+Phase 2E and 2F, planning-layout revisions, shop/commercial component, residential lot-size/product-mix revisions,
+and any implications of existing subdivision and individual titles. Do not assume authority submissions or deliverables unless stated.
+For any other custom consultancy category, extract the quoted scope faithfully and evaluate it against the client RFQ where available; do not force it into valuation, market-study or town-planning criteria.
 Preserve important exclusions, additional charges, validity periods, and conditions."""
 
 def trim_text_for_ai(text, max_chars=50000):
@@ -1417,7 +1783,7 @@ def parse_fee_value(value):
 
 
 def blank_scope_status(category):
-    return {item: "No" for item in DEFAULT_SCOPE_ITEMS.get(category, [])}
+    return {item: "No" for item in get_scope_items(category)}
 
 
 def normalize_scope_status(status, category):
@@ -1431,11 +1797,17 @@ def normalize_scope_status(status, category):
 
 
 def record_from_csv_row(row, row_number=1):
-    category = clean_cell(row.get("Category")) or "Land Valuation"
+    category = clean_cell(row.get("Category")) or "General Consultancy"
+    low = category.lower()
+    # Normalise only clear shorthand for the three specialist categories.
     if category not in DEFAULT_SCOPE_ITEMS:
-        # Be forgiving with common shorthand.
-        low = category.lower()
-        category = "Market Study" if "market" in low or "pricing" in low else "Land Valuation"
+        if "town planning" in low or "town planner" in low:
+            category = "Town Planning"
+        elif "market study" in low or "market research" in low or "pricing study" in low:
+            category = "Market Study"
+        elif "land valuation" in low or "property valuation" in low:
+            category = "Land Valuation"
+        # Any other wording is intentionally preserved as a custom category.
 
     consultant = clean_cell(row.get("Consultant")) or f"Consultant {row_number}"
     scope_summary = clean_cell(row.get("Scope Summary"))
@@ -1652,8 +2024,8 @@ def openrouter_chat(records, rfq_text, question, api_key, model):
 st.markdown(
     """
     <div class="pro-header">
-      <h1>Consultant Quotation Database</h1>
-      <p>CSV-first consultant quotation database with optional PDF extraction, structured comparison and Management decision support.</p>
+      <h1>Consultant Quotation Evaluation</h1>
+      <p>CSV-first consultant quotation evaluation with optional PDF extraction, structured comparison and Management decision support.</p>
       <span class="pro-chip">CSV source of truth</span>
       <span class="pro-chip">Executive comparison</span>
       <span class="pro-chip">Optional PDF / AI tools</span>
@@ -1663,6 +2035,20 @@ st.markdown(
 )
 
 with st.sidebar:
+    logo_path = Path(__file__).with_name("CGPD.png")
+
+    if logo_path.exists():
+        logo_b64 = base64.b64encode(logo_path.read_bytes()).decode("utf-8")
+
+        st.markdown(
+            f"""
+            <div class="sidebar-logo-card">
+                <img src="data:image/png;base64,{logo_b64}" class="sidebar-logo-img">
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        
     st.header("Project / RFQ")
     st.caption("Keep the everyday workflow simple. Advanced AI and project tools are available below when needed.")
     st.text_area(
@@ -1809,20 +2195,19 @@ with st.sidebar:
             use_container_width=True,
         ):
             st.session_state.records = []
-            st.session_state.confirm_clear_all = False
             st.rerun()
 
 tab1, tab2, tab3, tab4 = st.tabs([
-    "Data",
-    "Compare",
-    "Scope",
-    "Report",
+    "1. Data",
+    "2. Compare",
+    "3. Scope",
+    "4. Report",
 ])
 
 with tab1:
     st.subheader("CSV quotation database")
     st.markdown(
-        '<div class="pro-note"><b>Recommended workflow:</b> treat the CSV as the verified source of truth. '
+        '<div class="pro-note"><b>Recommended workflow:</b> Treat the CSV as the verified source of truth. '
         'Start by loading the verified master CSV. Manual entry and PDF assistance are optional secondary workflows.</div>',
         unsafe_allow_html=True,
     )
@@ -1893,7 +2278,11 @@ with tab1:
 
         st.markdown("**Commercial details**")
         mc1, mc2, mc3 = st.columns([1, 1.2, 1])
-        manual_category = mc1.selectbox("Category", ["Land Valuation", "Market Study"], key="manual_category")
+        manual_category_choice = mc1.selectbox("Category", CATEGORY_OPTIONS + ["Custom / Other"], key="manual_category")
+        if manual_category_choice == "Custom / Other":
+            manual_category = st.text_input("Custom quotation category", key="manual_custom_category", placeholder="e.g. Architect, Quantity Surveyor, C&S Engineer")
+        else:
+            manual_category = manual_category_choice
         manual_company = mc2.text_input("Consultant", key="manual_company")
         manual_fee = mc3.number_input("Professional fee (RM)", min_value=0.0, value=0.0, step=500.0, key="manual_fee")
         mm1, mm2 = st.columns(2)
@@ -1928,6 +2317,8 @@ with tab1:
         ):
             if not manual_company.strip():
                 st.warning("Enter the consultant name first.")
+            elif not str(manual_category).strip():
+                st.warning("Enter the quotation category first.")
             else:
                 rec = manual_blank_record(manual_category)
                 rec.update({
@@ -1972,8 +2363,9 @@ with tab1:
                 r["notes"] = st.text_area("Notes / exclusions / validity", r.get("notes", ""), height=90, key=f"db-notes-{idx}")
                 st.markdown("**Scope checklist**")
                 cols = st.columns(3)
-                r.setdefault("scope_status", blank_scope_status(r.get("category", "Land Valuation")))
-                for j, item in enumerate(DEFAULT_SCOPE_ITEMS[r["category"]]):
+                r.setdefault("scope_status", blank_scope_status(r.get("category", "General Consultancy")))
+                review_scope_items = get_scope_items(r.get("category", "General Consultancy"), r)
+                for j, item in enumerate(review_scope_items):
                     current = r["scope_status"].get(item, "No")
                     if current not in ["Yes", "Partial", "No"]:
                         current = "No"
@@ -2005,7 +2397,11 @@ with tab1:
             unsafe_allow_html=True,
         )
         c1, c2 = st.columns([1, 2])
-        category = c1.selectbox("Quotation type", ["Land Valuation", "Market Study"], key="pdf_category")
+        pdf_category_choice = c1.selectbox("Quotation type", CATEGORY_OPTIONS + ["Custom / Other"], key="pdf_category")
+        if pdf_category_choice == "Custom / Other":
+            category = c1.text_input("Custom quotation category", key="pdf_custom_category", placeholder="e.g. Architect, QS, M&E Consultant")
+        else:
+            category = pdf_category_choice
         uploads = c2.file_uploader("Upload consultant quotation PDF(s)", type=["pdf"], accept_multiple_files=True, key="pdf_uploads")
         if uploads and st.button("Extract PDF quotation(s)", type="primary", key="extract_pdfs"):
             incoming = []
@@ -2056,26 +2452,34 @@ with tab1:
             preview = records_to_master_csv(st.session_state.records)[[
                 "Consultant", "Category", "Professional Fee RM", "SST Treatment", "Completion Period", "Source File"
             ]]
-            st.dataframe(preview, use_container_width=True, hide_index=True)
+            render_readable_table(preview)
 
 with tab2:
     st.subheader("Quotation comparison")
-    cat = st.radio("View comparison", ["Land Valuation", "Market Study"], horizontal=True, key="comparison_category")
+    comparison_categories = available_categories(st.session_state.records)
+    cat = st.selectbox("View comparison", comparison_categories, key="comparison_category")
     subset = [r for r in st.session_state.records if r["category"] == cat]
+
+    if cat == "Town Planning":
+        st.markdown(
+            f'<div class="pro-note"><b>Town Planning RFQ basis:</b> {html.escape(TOWN_PLANNING_RFQ_NOTE)}</div>',
+            unsafe_allow_html=True,
+        )
 
     if not subset:
         st.info(f"No {cat} quotations loaded. Add or load quotation records in the Data tab first.")
     else:
         # Read the current scoring settings from session state so the results stay prominent.
         weights = {}
-        for i, (k, default_value) in enumerate(DEFAULT_WEIGHTS[cat].items()):
+        category_weights = get_category_weights(cat)
+        for i, (k, default_value) in enumerate(category_weights.items()):
             weights[k] = st.session_state.get(f"w-v10-{cat}-{i}", default_value)
 
         weight_total = sum(weights.values())
         if weight_total > 0 and weight_total != 100:
             score_weights = {k: (v / weight_total) * 100 for k, v in weights.items()}
         elif weight_total == 0:
-            score_weights = DEFAULT_WEIGHTS[cat].copy()
+            score_weights = category_weights.copy()
         else:
             score_weights = weights
 
@@ -2095,12 +2499,50 @@ with tab2:
         )
 
         k1, k2, k3, k4 = st.columns(4)
-        k1.metric("Current leader", f'{winner[0]["company"]} · {winner[1]}/100')
-        k2.metric("Lowest quoted fee", f"RM {lowest_fee:,.0f}" if lowest_fee else "Not stated")
-        k3.metric("Fastest completion", fastest_label or "Not stated")
-        k4.metric("Consultants reviewed", len(subset))
+
+        leader_name = str(winner[0].get("company", "Consultant"))
+        leader_score = winner[1]
+
+        if len(leader_name) > 32:
+            leader_font = "0.95rem"
+        elif len(leader_name) > 24:
+            leader_font = "1.05rem"
+        elif len(leader_name) > 18:
+            leader_font = "1.18rem"
+        else:
+            leader_font = "1.35rem"
+
+        with k1:
+            st.markdown(
+                f"""
+                <div class="leader-card">
+                    <div class="leader-label">Current leader</div>
+                    <div class="leader-value" style="font-size:{leader_font};">
+                        {html.escape(leader_name)}
+                    </div>
+                    <div class="leader-score">{leader_score}/100</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        k2.metric(
+            "Lowest quoted fee",
+            f"RM {lowest_fee:,.0f}" if lowest_fee else "Not stated",
+        )
+
+        k3.metric(
+            "Fastest completion",
+            fastest_label or "Not stated",
+        )
+
+        k4.metric(
+            "Consultants reviewed",
+            len(subset),
+        )
 
         st.markdown("### Detailed comparison")
+        st.caption("Scroll horizontally if needed. The table uses a light background for easier office viewing.")
         df = pd.DataFrame([{
             "Consultant": r["company"],
             "Fee (RM)": r.get("fee"),
@@ -2111,20 +2553,17 @@ with tab2:
             "Scope Score": round(scope_numeric(r.get("scope_status", {})), 1),
             "Overall Score": total,
         } for r, total, _ in scores])
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        render_readable_table(df)
 
-        chart = pd.DataFrame({
-            "Consultant": [r["company"] for r, t, c in scores],
-            "Overall Score": [t for r, t, c in scores],
-        }).set_index("Consultant")
-        st.bar_chart(chart)
+        st.markdown("### Overall score")
+        render_score_bars(scores)
 
         with st.expander("Customize scoring", expanded=False):
             st.caption("The dashboard uses the recommended weighting by default. Adjust only when Management wants a different emphasis.")
-            cols = st.columns(len(DEFAULT_WEIGHTS[cat]))
+            cols = st.columns(min(3, len(category_weights)))
             edited_weights = {}
-            for i, (k, v) in enumerate(DEFAULT_WEIGHTS[cat].items()):
-                edited_weights[k] = cols[i].number_input(k, 0, 100, v, 5, key=f"w-v10-{cat}-{i}")
+            for i, (k, v) in enumerate(category_weights.items()):
+                edited_weights[k] = cols[i % len(cols)].number_input(k, 0, 100, v, 5, key=f"w-v10-{cat}-{i}")
             edited_total = sum(edited_weights.values())
             if edited_total != 100:
                 st.warning(
@@ -2137,18 +2576,31 @@ with tab2:
         st.caption("Decision-support only. Check the verified CSV against the signed/final quotation before appointment.")
 
 with tab3:
-    cat = st.radio("Scope matrix", ["Land Valuation", "Market Study"], horizontal=True, key="scope_matrix_category")
+    scope_categories = available_categories(st.session_state.records)
+    cat = st.selectbox("Scope matrix", scope_categories, key="scope_matrix_category")
     subset = [r for r in st.session_state.records if r["category"] == cat]
+    if cat == "Town Planning":
+        st.markdown(
+            f'<div class="pro-note"><b>Town Planning scope checklist:</b> {html.escape(TOWN_PLANNING_RFQ_NOTE)}</div>',
+            unsafe_allow_html=True,
+        )
     if not subset:
         st.info(f"No {cat} quotations loaded.")
     else:
         rows = []
-        for item in DEFAULT_SCOPE_ITEMS[cat]:
+        scope_items = []
+        for r in subset:
+            for item in get_scope_items(cat, r):
+                if item not in scope_items:
+                    scope_items.append(item)
+        if not scope_items:
+            scope_items = get_scope_items(cat)
+        for item in scope_items:
             row = {"Scope Item": item}
             for r in subset:
                 row[r["company"]] = r.get("scope_status", {}).get(item, "No")
             rows.append(row)
-        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        render_readable_table(pd.DataFrame(rows))
 
 with tab4:
     st.subheader("Management report")
@@ -2156,10 +2608,10 @@ with tab4:
         st.info("No quotations loaded. Add or load quotation records in the Data tab first.")
     else:
         lines = []
-        for report_cat in ["Land Valuation", "Market Study"]:
+        for report_cat in available_categories(st.session_state.records):
             report_subset = [r for r in st.session_state.records if r["category"] == report_cat]
             if report_subset:
-                report_scores = compute_scores(st.session_state.records, report_cat, DEFAULT_WEIGHTS[report_cat])
+                report_scores = compute_scores(st.session_state.records, report_cat, get_category_weights(report_cat))
                 report_record, report_score, _ = report_scores[0]
                 lines.append(
                     f"{report_cat}: Recommend {report_record['company']} based on the default scoring model "
@@ -2205,7 +2657,7 @@ with tab4:
         )
         st.caption("Keep this CSV as the verified source of truth. Re-upload it in the Data tab next time; you do not need to process the same PDFs again.")
         with st.expander("Preview master CSV", expanded=False):
-            st.dataframe(master_df, use_container_width=True, hide_index=True)
+            render_readable_table(master_df)
 
         st.divider()
         with st.expander("Optional AI Analyst", expanded=False):
@@ -2222,6 +2674,7 @@ with tab4:
                 examples = [
                     "Which consultant offers the best overall value and why?",
                     "Compare only the Market Study scope.",
+                    "Compare the Town Planning quotations against the revised DO RFQ scope.",
                     "What clarification questions should I send before appointment?",
                     "Draft a concise Management recommendation.",
                 ]
