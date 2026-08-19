@@ -235,18 +235,41 @@ label, [data-testid="stWidgetLabel"] p {
   background: var(--bp-white) !important;
   color: var(--bp-ink) !important;
 }
-[data-baseweb="popover"] [role="option"]:hover,
+/* Selectbox dropdown hover / focus - remove orange rectangle */
+[role="listbox"] [role="option"],
+[data-baseweb="menu"] [role="option"],
+[data-baseweb="popover"] [role="option"] {
+  background: #FFFDF8 !important;
+  color: #102033 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+[role="listbox"] [role="option"]:hover,
+[role="listbox"] [role="option"]:focus,
+[role="listbox"] [role="option"]:focus-visible,
+[role="listbox"] [role="option"][aria-selected="true"],
 [data-baseweb="menu"] [role="option"]:hover,
-[data-baseweb="popover"] [role="option"][aria-selected="true"],
-[data-baseweb="menu"] [role="option"][aria-selected="true"] {
+[data-baseweb="popover"] [role="option"]:hover {
   background: #E8E4DC !important;
   color: #102033 !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
-[data-baseweb="popover"] [role="option"]:focus,
-[data-baseweb="menu"] [role="option"]:focus,
-[data-baseweb="popover"] [role="option"]:focus-visible,
-[data-baseweb="menu"] [role="option"]:focus-visible {
-  background: #E8E4DC !important;
+
+/* Force all inner elements of hovered option to use same background */
+[role="listbox"] [role="option"]:hover *,
+[role="listbox"] [role="option"]:focus *,
+[role="listbox"] [role="option"][aria-selected="true"] * {
+  background: transparent !important;
+  color: #102033 !important;
+}
+
+/* Remove BaseWeb orange focus ring from selectbox itself */
+[data-baseweb="select"] > div:focus,
+[data-baseweb="select"] > div:focus-within,
+[data-baseweb="select"] [aria-expanded="true"] {
+  border-color: rgba(16,32,51,.28) !important;
   outline: none !important;
   box-shadow: none !important;
 }
