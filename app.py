@@ -771,43 +771,55 @@ a { color: var(--bp-blue) !important; }
   box-shadow: none !important;
 }
 
-/* Streamlit Settings drawer - theme aware */
-
-/* LIGHT MODE */
-@media (prefers-color-scheme: light) {
-  div[role="dialog"] h1,
-  div[role="dialog"] h2,
-  div[role="dialog"] h3,
-  div[role="dialog"] h4,
-  div[role="dialog"] p,
-  div[role="dialog"] label {
-    color: #102033 !important;
-    -webkit-text-fill-color: #102033 !important;
-  }
-
-  div[role="dialog"] small {
-    color: #59616A !important;
-    -webkit-text-fill-color: #59616A !important;
-  }
+/* Streamlit Settings drawer - always readable */
+div[role="dialog"] {
+  background: #0E1117 !important;
+  color: #F4F7F9 !important;
 }
 
-/* DARK MODE */
-@media (prefers-color-scheme: dark) {
-  div[role="dialog"] h1,
-  div[role="dialog"] h2,
-  div[role="dialog"] h3,
-  div[role="dialog"] h4,
-  div[role="dialog"] p,
-  div[role="dialog"] label {
-    color: #F4F7F9 !important;
-    -webkit-text-fill-color: #F4F7F9 !important;
-  }
-
-  div[role="dialog"] small {
-    color: #B8C4CC !important;
-    -webkit-text-fill-color: #B8C4CC !important;
-  }
+/* Main Settings text */
+div[role="dialog"] h1,
+div[role="dialog"] h2,
+div[role="dialog"] h3,
+div[role="dialog"] h4,
+div[role="dialog"] p,
+div[role="dialog"] label {
+  color: #F4F7F9 !important;
+  -webkit-text-fill-color: #F4F7F9 !important;
 }
+
+/* Secondary / help text */
+div[role="dialog"] small,
+div[role="dialog"] [data-testid="stCaptionContainer"] {
+  color: #B8C4CC !important;
+  -webkit-text-fill-color: #B8C4CC !important;
+}
+
+/* Settings dropdown stays light */
+div[role="dialog"] [data-baseweb="select"] > div {
+  background: #FFFDF8 !important;
+  color: #102033 !important;
+}
+
+div[role="dialog"] [data-baseweb="select"] span,
+div[role="dialog"] [data-baseweb="select"] div {
+  color: #102033 !important;
+  -webkit-text-fill-color: #102033 !important;
+}
+
+/* Edit active theme button */
+div[role="dialog"] button {
+  color: #F4F7F9 !important;
+  -webkit-text-fill-color: #F4F7F9 !important;
+  border-color: rgba(255,255,255,.22) !important;
+}
+
+/* Close X */
+div[role="dialog"] button svg {
+  color: #F4F7F9 !important;
+  fill: #F4F7F9 !important;
+}
+
 </style>
 """
 st.markdown(PRO_CSS, unsafe_allow_html=True)
