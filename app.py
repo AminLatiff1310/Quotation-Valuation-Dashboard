@@ -230,6 +230,10 @@ label, [data-testid="stWidgetLabel"] p {
   box-shadow: none !important;
 }
 [data-baseweb="select"] span, [data-baseweb="select"] div { color: var(--bp-ink) !important; }
+/* Hide blinking text caret inside Streamlit selectbox */
+[data-baseweb="select"] input {
+  caret-color: transparent !important;
+}
 [data-baseweb="popover"], [data-baseweb="menu"] { background: var(--bp-white) !important; }
 [data-baseweb="popover"] [role="option"], [data-baseweb="menu"] [role="option"] {
   background: var(--bp-white) !important;
