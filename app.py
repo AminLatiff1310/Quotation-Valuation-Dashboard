@@ -771,58 +771,42 @@ a { color: var(--bp-blue) !important; }
   box-shadow: none !important;
 }
 
-/* Streamlit Settings panel - improve readability in dark mode */
-[data-testid="stMainMenu"] {
-  color: #F4F7F9 !important;
+/* Streamlit Settings drawer - theme aware */
+
+/* LIGHT MODE */
+@media (prefers-color-scheme: light) {
+  div[role="dialog"] h1,
+  div[role="dialog"] h2,
+  div[role="dialog"] h3,
+  div[role="dialog"] h4,
+  div[role="dialog"] p,
+  div[role="dialog"] label {
+    color: #102033 !important;
+    -webkit-text-fill-color: #102033 !important;
+  }
+
+  div[role="dialog"] small {
+    color: #59616A !important;
+    -webkit-text-fill-color: #59616A !important;
+  }
 }
 
-[data-testid="stMainMenu"] h1,
-[data-testid="stMainMenu"] h2,
-[data-testid="stMainMenu"] h3,
-[data-testid="stMainMenu"] h4,
-[data-testid="stMainMenu"] p,
-[data-testid="stMainMenu"] span,
-[data-testid="stMainMenu"] label,
-[data-testid="stMainMenu"] div {
-  color: #F4F7F9 !important;
-  -webkit-text-fill-color: #F4F7F9 !important;
-}
+/* DARK MODE */
+@media (prefers-color-scheme: dark) {
+  div[role="dialog"] h1,
+  div[role="dialog"] h2,
+  div[role="dialog"] h3,
+  div[role="dialog"] h4,
+  div[role="dialog"] p,
+  div[role="dialog"] label {
+    color: #F4F7F9 !important;
+    -webkit-text-fill-color: #F4F7F9 !important;
+  }
 
-/* Secondary/help text in Settings */
-[data-testid="stMainMenu"] small,
-[data-testid="stMainMenu"] [data-testid="stCaptionContainer"] {
-  color: #C4D2DB !important;
-  -webkit-text-fill-color: #C4D2DB !important;
-}
-
-/* Settings selectbox text */
-[data-testid="stMainMenu"] [data-baseweb="select"] span,
-[data-testid="stMainMenu"] [data-baseweb="select"] div {
-  color: #102033 !important;
-  -webkit-text-fill-color: #102033 !important;
-}
-
-/* Settings buttons */
-[data-testid="stMainMenu"] button,
-[data-testid="stMainMenu"] button * {
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
-}
-
-/* Fallback for Streamlit Settings / Appearance drawer */
-div[role="dialog"] h1,
-div[role="dialog"] h2,
-div[role="dialog"] h3,
-div[role="dialog"] h4,
-div[role="dialog"] p,
-div[role="dialog"] label {
-  color: #F4F7F9 !important;
-  -webkit-text-fill-color: #F4F7F9 !important;
-}
-
-div[role="dialog"] small {
-  color: #C4D2DB !important;
-  -webkit-text-fill-color: #C4D2DB !important;
+  div[role="dialog"] small {
+    color: #B8C4CC !important;
+    -webkit-text-fill-color: #B8C4CC !important;
+  }
 }
 </style>
 """
