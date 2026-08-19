@@ -2564,12 +2564,6 @@ with tab2:
     cat = st.selectbox("View comparison", comparison_categories, key="comparison_category")
     subset = [r for r in st.session_state.records if r["category"] == cat]
 
-    if cat == "Town Planning":
-        st.markdown(
-            f'<div class="pro-note"><b>Town Planning RFQ basis:</b> {html.escape(TOWN_PLANNING_RFQ_NOTE)}</div>',
-            unsafe_allow_html=True,
-        )
-
     if not subset:
         st.info(f"No {cat} quotations loaded. Add or load quotation records in the Data tab first.")
     else:
